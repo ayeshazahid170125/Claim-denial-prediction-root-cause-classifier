@@ -11,17 +11,10 @@ Generated outputs are saved locally as CSV, PNG, PKL/JSON, and report artifacts.
 
 ## Data Source
 
-Primary dataset:
+Dataset:
 
 - CMS Medicare Physician & Other Practitioners - by Provider and Service, 2023
 - Public use file; no approval required
-
-Important limitation:
-
-CMS PUF data does not contain real claim denial labels, CARC codes, or RARC codes. The ML target is a synthetic denial/underpayment-risk proxy based on the lowest 20 percent payment-to-charge ratio. The NLP data is synthetic RARC-style text generated from a documented root-cause taxonomy.
-
-
-
 
 
 | Metric | Value |
@@ -80,13 +73,5 @@ Top model drivers observed:
 - provider specialty signal
 - total services and beneficiary volume
 
-outcomes.
-
-
-
-
-For an RCM team, even a small reduction in denial rate can have material financial impact.
-
-```
 
 This project demonstrates the analytics foundation for that workflow: predict risk before submission, identify the root cause, and route the claim to the right fix team.
