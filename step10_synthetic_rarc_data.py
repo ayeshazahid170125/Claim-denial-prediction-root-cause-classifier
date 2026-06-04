@@ -47,6 +47,8 @@ ROWS_PER_CATEGORY = 5_000
 TRAIN_SIZE = 0.70
 VAL_SIZE = 0.15
 TEST_SIZE = 0.15
+DISTRACTOR_CONTEXT_RATE = 0.35
+TYPO_NOISE_RATE = 0.08
 
 random.seed(RANDOM_STATE)
 np.random.seed(RANDOM_STATE)
@@ -217,6 +219,28 @@ REFERENCE_TERMS = [
     "prebill reference",
     "audit reference",
 ]
+DISTRACTOR_CONTEXTS = [
+    "Eligibility was checked separately, but the line still needs review.",
+    "Coverage appears active, but another payer rule may still apply.",
+    "Authorization details may be present, but the claim still needs validation.",
+    "Coding was reviewed, but payer edits may still require follow-up.",
+    "Documentation may be available, but the record should be confirmed.",
+    "Filing date appears within the normal workflow, but the payer response remains unresolved.",
+    "The service may be covered, but another denial condition should be reviewed.",
+    "No duplicate was confirmed during intake, but adjudication notes still require review.",
+    "Other insurance information may be current, but payer sequencing should be checked.",
+    "Medical necessity support may exist, but the claim needs final analyst review.",
+]
+TYPO_REPLACEMENTS = {
+    "claim": "clm",
+    "service": "svc",
+    "authorization": "auth",
+    "documentation": "docs",
+    "procedure": "proc",
+    "diagnosis": "dx",
+    "medical": "med",
+    "benefit": "bnft",
+}
 
 
 def print_section(title):
@@ -228,6 +252,18 @@ def print_section(title):
 def normalize_text(text):
     text = re.sub(r"\s+", " ", str(text)).strip()
     return text
+
+
+def add_typo_noise(text):
+    """Add light billing-note shorthand without encoding the target label."""
+    if random.random() >= TYPO_NOISE_RATE:
+        return text
+
+    candidates = [word for word in TYPO_REPLACEMENTS if re.search(rf"\b{word}\b", text, flags=re.IGNORECASE)]
+    if not candidates:
+        return text
+    word = random.choice(candidates)
+    return re.sub(rf"\b{word}\b", TYPO_REPLACEMENTS[word], text, count=1, flags=re.IGNORECASE)
 
 
 def load_taxonomy():
@@ -276,6 +312,9 @@ def mutate_template(template, label, sequence_id):
         text = f"{text} ({context})"
     if random.random() < 0.45:
         text = f"{text} {random.choice(ACTION_NOTES)}."
+    if random.random() < DISTRACTOR_CONTEXT_RATE:
+        text = f"{text} {random.choice(DISTRACTOR_CONTEXTS)}"
+    text = add_typo_noise(text)
     # Guaranteed neutral uniqueness. The reference number is not category-coded,
     # so it prevents duplicate synthetic text without leaking the label.
     text = f"{text} [{random.choice(REFERENCE_TERMS)} REF{sequence_id:06d}]"
@@ -341,6 +380,8 @@ def make_quality_report(dataset, train_df, val_df, test_df):
         {"metric": "labels", "value": dataset["label"].nunique()},
         {"metric": "rows_per_category_target", "value": ROWS_PER_CATEGORY},
         {"metric": "random_state", "value": RANDOM_STATE},
+        {"metric": "distractor_context_rate", "value": DISTRACTOR_CONTEXT_RATE},
+        {"metric": "typo_noise_rate", "value": TYPO_NOISE_RATE},
         {"metric": "train_size", "value": len(train_df)},
         {"metric": "validation_size", "value": len(val_df)},
         {"metric": "test_size", "value": len(test_df)},

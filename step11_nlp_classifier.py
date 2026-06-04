@@ -129,6 +129,7 @@ PATIENCE = 2
 LEARNING_RATE = 2e-5
 WEIGHT_DECAY = 0.01
 WARMUP_RATIO = 0.10
+PERFECT_SCORE_WARNING_THRESHOLD = 0.995
 
 # Keep local CPU runs practical. On GPU, full data is used by default.
 CPU_TRAIN_LIMIT = 12_000
@@ -208,6 +209,23 @@ def check_text_overlap(train_df, val_df, test_df):
         "train_test_overlap": len(train_text & test_text),
         "val_test_overlap": len(val_text & test_text),
     }
+
+
+def build_quality_warnings(comparison_df, overlap_report):
+    warnings_list = []
+    if any(value > 0 for value in overlap_report.values()):
+        warnings_list.append(
+            "Duplicate text was found across train/validation/test splits. Rebuild Step 10 splits before reporting metrics."
+        )
+
+    if not comparison_df.empty and comparison_df["test_f1_weighted"].max() >= PERFECT_SCORE_WARNING_THRESHOLD:
+        warnings_list.append(
+            "NLP test F1 is near-perfect on synthetic data. Treat this as a controlled benchmark, not a real-world payer generalization estimate."
+        )
+        warnings_list.append(
+            "Synthetic templates may remain too separable even without exact duplicate leakage; validate with real CARC/RARC remark text before buyer claims."
+        )
+    return warnings_list
 
 
 def evaluate_predictions(y_true, y_pred, label_ids):
@@ -572,7 +590,7 @@ def save_predictions(test_df, id_to_label, best_result):
     pred_df.to_csv(TEST_PREDICTIONS_PATH, index=False)
 
 
-def save_model_card(comparison_df, best_result, overlap_report, id_to_label):
+def save_model_card(comparison_df, best_result, overlap_report, id_to_label, quality_warnings):
     card = {
         "project": "WellMind denial root-cause NLP classifier",
         "task": "10-class synthetic RARC-style denial reason classification",
@@ -582,10 +600,22 @@ def save_model_card(comparison_df, best_result, overlap_report, id_to_label):
         "real_denial_text_used": False,
         "labels": {str(k): v for k, v in id_to_label.items()},
         "leakage_check": overlap_report,
+        "quality_warnings": quality_warnings,
+        "metric_interpretation": {
+            "synthetic_benchmark": True,
+            "real_world_generalization_claim": False,
+            "perfect_score_threshold": PERFECT_SCORE_WARNING_THRESHOLD,
+        },
         "model_comparison": comparison_df.to_dict(orient="records"),
         "limitations": [
             "Synthetic text is useful for demo/model plumbing, not a substitute for real payer remittance data.",
+            "Near-perfect metrics can occur because category-specific template language is easier than real payer remark text.",
             "A production deployment should retrain or calibrate with real CARC/RARC remarks and adjudication outcomes.",
+        ],
+        "recommended_next_steps": [
+            "Add real payer remittance remark text when available.",
+            "Evaluate on a time-based or payer-based external holdout.",
+            "Continue adding ambiguous, cross-category, and noisy examples to the synthetic generator.",
         ],
     }
     MODEL_CARD_PATH.write_text(json.dumps(card, indent=2), encoding="utf-8")
@@ -619,6 +649,7 @@ def main():
         comparison_rows.append(row)
     comparison_df = pd.DataFrame(comparison_rows).sort_values("test_f1_weighted", ascending=False)
     comparison_df.to_csv(MODEL_COMPARISON_PATH, index=False)
+    quality_warnings = build_quality_warnings(comparison_df, overlap_report)
 
     best_result = results[int(np.argmax([r["test_metrics"]["f1_weighted"] for r in results]))]
     save_predictions(test_df, id_to_label, best_result)
@@ -631,10 +662,14 @@ def main():
         f"Best NLP Model Confusion Matrix - {best_result['name']}",
     )
     save_metric_chart(comparison_df)
-    save_model_card(comparison_df, best_result, overlap_report, id_to_label)
+    save_model_card(comparison_df, best_result, overlap_report, id_to_label, quality_warnings)
 
     print_section("FINAL NLP SUMMARY")
     print(comparison_df.to_string(index=False))
+    if quality_warnings:
+        print("\nQuality warnings:")
+        for warning in quality_warnings:
+            print(f"- {warning}")
     print(f"\nBest NLP model: {best_result['name']}")
     print(f"Best weighted F1: {best_result['test_metrics']['f1_weighted']:.4f}")
     print(f"Saved comparison: {MODEL_COMPARISON_PATH}")
