@@ -367,7 +367,7 @@ What was done:
 
 - Built NLP pipeline for 10-class root-cause classification.
 - Trains a TF-IDF + Logistic Regression baseline.
-- Supports DistilBERT fine-tuning when GPU/transformers are available.
+- Fine-tuned DistilBERT on Kaggle GPU and compared it with a TF-IDF + Logistic Regression baseline.
 - Made the code Kaggle-compatible:
   - inputs can be auto-detected from `/kaggle/input`
   - outputs save to `/kaggle/working/nlp_outputs`
@@ -378,14 +378,31 @@ What was done:
 - Added warning logic for suspiciously perfect scores.
 - Added model card outputs with source summary and limitations.
 
-Current local TF-IDF result after official RARC augmentation:
+Latest NLP results after official RARC augmentation:
+
+| Model | Training Time | Test Accuracy | Test Precision Weighted | Test Recall Weighted | Test F1 Weighted | Test F1 Macro |
+|---|---:|---:|---:|---:|---:|---:|
+| DistilBERT | 1,374.37 sec | 0.9896 | 0.9906 | 0.9896 | 0.9896 | 0.9896 |
+| TF-IDF Logistic Regression | 6.84 sec | 0.9891 | 0.9898 | 0.9891 | 0.9890 | 0.9890 |
+
+Best NLP model:
 
 | Metric | Value |
 |---|---:|
-| Test Accuracy | 0.9891 |
-| Test Precision Weighted | 0.9898 |
-| Test Recall Weighted | 0.9891 |
-| Test F1 Weighted | 0.9890 |
+| Best model | DistilBERT |
+| Best epoch | 1 |
+| Validation F1 Weighted | 0.9892 |
+| Test Accuracy | 0.9896 |
+| Test Precision Weighted | 0.9906 |
+| Test Recall Weighted | 0.9896 |
+| Test F1 Weighted | 0.9896 |
+
+Per-category observations:
+
+- Most categories achieved near-perfect classification.
+- `eligibility` achieved F1 0.9506.
+- `not_covered` achieved F1 0.9451.
+- The main remaining confusion is between eligibility/coverage-related language and not-covered/benefit-exclusion language, which is realistic because those categories can overlap in actual RCM workflows.
 
 Leakage check:
 
@@ -409,6 +426,7 @@ Why it matters:
 Important note:
 
 - The NLP result is strong because official RARC language is category-specific.
+- DistilBERT slightly outperformed the TF-IDF baseline on the Kaggle GPU run.
 - It should still be validated on real payer remittance records before production claims.
 
 ---
@@ -542,7 +560,7 @@ This ROI should be validated with client-specific denial rates and recovery rate
 | Month 2 - Explainability | Mostly complete | Feature importance/SHAP-style outputs prepared |
 | Month 3 - RARC taxonomy | Complete | 10 root-cause labels |
 | Month 3 - NLP dataset | Complete | Official RARC descriptions + synthetic context |
-| Month 3 - NLP classifier | Complete | TF-IDF baseline and DistilBERT support |
+| Month 3 - NLP classifier | Complete | TF-IDF baseline plus DistilBERT fine-tuned on Kaggle GPU; best F1 0.9896 |
 | Month 3 - FastAPI endpoint | Pending | Next task |
 | Month 4 - Dashboard | Pending | Next task |
 | Month 4 - ROI brief | Pending | Can be created from current outputs |
@@ -586,4 +604,3 @@ This ROI should be validated with client-specific denial rates and recovery rate
 This project has built a professional end-to-end foundation for a claim denial prediction and root-cause classification system. The CMS-based ML pipeline predicts denial/underpayment risk using a carefully documented proxy target, compares multiple models, applies tuning, and produces strong evaluation results. The NLP pipeline has been upgraded from simple synthetic templates to official X12 RARC descriptions augmented with realistic claim-review context, making the root-cause classifier more credible and aligned with real healthcare remittance standards.
 
 The project is technically strong for a portfolio/proof-of-concept. It is honest about its limitations: CMS public data does not include actual denial labels, and NLP still needs real payer remittance data for production validation. The next major deliverables are FastAPI inference, dashboard, ROI brief, and final methodology PDF.
-
