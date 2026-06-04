@@ -4,8 +4,6 @@ WellMind Data Solutions built an end-to-end healthcare revenue cycle analytics s
 
 The goal is simple: help billing teams fix risky claims first, instead of waiting for a rejection cycle.
 
-## Business Problem
-
 Healthcare providers lose time and revenue when claims are denied after submission. Most denial work happens too late: after the payer has already rejected the claim.
 
 This project demonstrates a prevention-first workflow:
