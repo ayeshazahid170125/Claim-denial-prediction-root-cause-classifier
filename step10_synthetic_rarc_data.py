@@ -271,7 +271,7 @@ def mutate_template(template, label, sequence_id):
             claim_id=f"CLM{sequence_id:06d}",
             encounter_id=f"ENC{random.randint(10000, 99999)}",
             batch_id=f"B{random.randint(100, 999)}",
-            edit_id=f"{label[:3].upper()}-{random.randint(100, 999)}",
+            edit_id=f"EDT-{random.randint(100, 999)}",
         )
         text = f"{text} ({context})"
     if random.random() < 0.45:
