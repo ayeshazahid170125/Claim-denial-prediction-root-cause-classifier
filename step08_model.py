@@ -48,7 +48,7 @@ IMPORTANT DESIGN DECISIONS
 - PAYMENT columns dropped before any model sees features
 - SMOTE not used — scale_pos_weight + class_weight sufficient at 20% rate
 - OPTUNA uses AUC-PR (not AUC-ROC) — better signal for imbalanced targets
-- TEST SET is touched EXACTLY ONCE at the very end
+- Model selection uses validation PR-AUC; test metrics are reported as holdout evaluation
 - SHAP computed on test set only
 
 Run: python step08_final_best.py
@@ -644,6 +644,11 @@ for name, spec in baseline_specs.items():
 #    Optuna (preferred) or RandomizedSearchCV (fallback)
 # ═══════════════════════════════════════════════════════════════
 print_section("9. HYPERPARAMETER TUNING")
+print(
+    "Note: high-cardinality encoders were fit on the model-train split before tuning. "
+    "Tuning CV scores may be slightly optimistic; validation PR-AUC and holdout test "
+    "metrics are the primary reported metrics."
+)
 
 tune_pack = pd.concat([X_train, y_train.rename("_t")], axis=1)
 tune_pack = stratified_sample(tune_pack, "_t", TUNING_MAX_ROWS, "Tuning sample")
@@ -871,7 +876,10 @@ comparison_df = pd.DataFrame(results).sort_values(
     ["val_pr_auc", "val_roc_auc", "val_f1"], ascending=False
 )
 comparison_df.to_csv(OUTPUT_DIR / "model_comparison.csv", index=False)
-pd.DataFrame(tuning_rows).to_csv(OUTPUT_DIR / "tuning_results.json", index=False)
+tuning_df = pd.DataFrame(tuning_rows)
+tuning_df.to_csv(OUTPUT_DIR / "tuning_results.csv", index=False)
+with open(OUTPUT_DIR / "tuning_results.json", "w", encoding="utf-8") as fh:
+    json.dump(tuning_rows, fh, indent=2)
 
 print(comparison_df[[
     "model", "tuned",
@@ -1326,7 +1334,9 @@ report = {
                                     "Avg_Mdcr_Stdzd_Amt_log","flag_charge_lt_payment",
                                     "flag_zero_payment","flag_zero_allowed"],
         "model_selection_metric" : "validation PR-AUC",
-        "test_set_policy"        : "touched exactly once — final evaluation only",
+        "test_set_policy"        : "holdout test metrics are reported for model comparison; best model is selected by validation PR-AUC",
+        "high_cardinality_encoding": "frequency and smoothed target encoders are fit on the model-train split only",
+        "tuning_cv_note"         : "tuning CV uses features encoded before CV, so CV tuning scores may be slightly optimistic; validation and test metrics are the primary reported metrics",
     },
     "class_balance_controls": {
         "raw_scale_pos_weight": raw_scale_pos_weight,
