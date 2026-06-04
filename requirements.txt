@@ -10,3 +10,5 @@ shap
 optuna
 openpyxl
 xlrd
+torch
+transformers
