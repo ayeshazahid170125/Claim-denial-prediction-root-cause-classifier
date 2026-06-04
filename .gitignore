@@ -18,6 +18,31 @@ Medicare_Cleaned_Credentials.csv
 Medicare_Cleaned_Outliers.csv
 Medicare_Cleaned_Encoded.csv
 test_predictions_sample.csv
+eda_numeric_summary.csv
+eda_categorical_summary.csv
+eda_column_profile.csv
+null_detection_summary.csv
+duplicate_detection_summary.csv
+outlier_numeric_summary.csv
+business_rule_review_summary.csv
+cleaning_null_before_after.csv
+cleaning_string_null_fixes.csv
+cleaning_zero_review_flags.csv
+cleaning_column_actions.csv
+cleaning_summary.csv
+credentials_group_summary.csv
+credentials_mapping_audit.csv
+credentials_other_review.csv
+feature_rule_review_summary.csv
+encoding_summary.csv
+frequency_encoding_maps.csv
+encoding_deferred_high_cardinality.csv
+premodel_*.csv
+model_comparison.csv
+threshold_review_table.csv
+risk_decile_report.csv
+feature_importance.csv
+model_training_report.json
 model_outputs/test_predictions_sample.csv
 nlp_outputs/rarc_denial_dataset.csv
 nlp_outputs/rarc_train.csv
@@ -31,6 +56,11 @@ nlp_outputs/rarc_test.csv
 *.bin
 *.safetensors
 distilbert_denial_classifier/
+model_outputs/
+model_charts/
+charts/
+nlp_outputs/
+outlier_detection_charts.png
 
 # Local system files
 .DS_Store
