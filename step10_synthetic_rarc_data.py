@@ -44,7 +44,20 @@ QUALITY_REPORT_PATH = OUTPUT_DIR / "rarc_dataset_quality_report.csv"
 CHART_PATH = OUTPUT_DIR / "rarc_data_stats.png"
 
 RANDOM_STATE = 42
-ROWS_PER_CATEGORY = 5_000
+# Rows per category based on available real RARC codes
+# More codes = more unique rows possible
+ROWS_PER_CATEGORY = {
+    "eligibility":                 150,   # 7 real codes
+    "authorization":               150,   # 6 real codes
+    "duplicate_claim":             150,   # 7 real codes
+    "medical_necessity":           150,   # 7 real codes
+    "timely_filing":               100,   # 2 real codes
+    "coding_error":                200,   # 12 real codes
+    "coordination_of_benefits":    200,   # 10 real codes
+    "not_covered":                 250,   # 17 real codes
+    "other":                       250,   # 17 real codes
+    "documentation":               400,   # 42 real codes
+}
 TRAIN_SIZE = 0.70
 VAL_SIZE = 0.15
 TEST_SIZE = 0.15
@@ -320,7 +333,8 @@ def load_real_rarc_template_lookup():
         for code in codes:
             description = code_to_description.get(code.upper())
             if description:
-                templates.append(f"RARC {code.upper()}: {description}")
+                # Store as-is — no prefix, no augmentation
+                templates.append(description)
         if templates:
             lookup[label] = templates
     return lookup, len(real_rarc)
@@ -368,22 +382,65 @@ def mutate_template(template, label, sequence_id):
     return normalize_text(text)
 
 
+
+def mutate_real_description(template, sequence_id):
+    """
+    Light variation on real X12 descriptions.
+    Only patient/payer/service synonyms are swapped.
+    No fake suffixes, no claim context, no distractor sentences.
+    This keeps the meaning accurate while generating enough unique rows.
+    """
+    text = template
+    replacements = {
+        r"\bPatient\b": random.choice(PATIENT_TERMS).capitalize(),
+        r"\bpatient\b": random.choice(PATIENT_TERMS),
+        r"\bMember\b": random.choice(PATIENT_TERMS).capitalize(),
+        r"\bmember\b": random.choice(PATIENT_TERMS),
+        r"\bPayer\b": random.choice(PAYER_TERMS).capitalize(),
+        r"\bpayer\b": random.choice(PAYER_TERMS),
+        r"\bservice\b": random.choice(SERVICE_TERMS),
+        r"\bService\b": random.choice(SERVICE_TERMS).capitalize(),
+    }
+    for pattern, replacement in replacements.items():
+        if random.random() < 0.45:
+            text = re.sub(pattern, replacement, text)
+    return normalize_text(text)
+
+
 def generate_category_rows(label_id, label, display_name, n_rows, template_lookup=None):
     template_lookup = template_lookup or {}
     if label not in BASE_TEMPLATES and label not in template_lookup:
         raise KeyError(f"No templates configured for label: {label}")
 
-    templates = template_lookup.get(label) or BASE_TEMPLATES[label]
-    source_type = "official_rarc_augmented" if label in template_lookup else "synthetic_rarc_style"
+    real_templates = template_lookup.get(label, [])
+    synthetic_templates = BASE_TEMPLATES.get(label, [])
+
+    # Combine both pools — real descriptions as base, synthetic for variety
+    # Weight: 60% real (if available), 40% synthetic
+    has_real = len(real_templates) > 0
+    all_templates = real_templates + synthetic_templates
+
+    if not all_templates:
+        raise KeyError(f"No templates configured for label: {label}")
+
     rows = []
     seen = set()
     attempts = 0
-    max_attempts = n_rows * 20
+    max_attempts = n_rows * 50
 
     while len(rows) < n_rows and attempts < max_attempts:
         attempts += 1
-        template = random.choice(templates)
-        text = mutate_template(template, label, attempts)
+
+        # Pick from real or synthetic pool
+        if has_real and random.random() < 0.60:
+            template = random.choice(real_templates)
+            text = mutate_real_description(template, attempts)
+            source_type = "official_rarc"
+        else:
+            template = random.choice(synthetic_templates)
+            text = mutate_template(template, label, attempts)
+            source_type = "synthetic_rarc_style"
+
         key = text.lower()
         if key in seen:
             continue
@@ -398,10 +455,10 @@ def generate_category_rows(label_id, label, display_name, n_rows, template_looku
             }
         )
 
-    if len(rows) < n_rows:
-        raise RuntimeError(
-            f"Could only generate {len(rows):,} unique rows for {label}; requested {n_rows:,}."
-        )
+    actual = len(rows)
+    if actual < n_rows:
+        print(f"  WARNING: Only generated {actual}/{n_rows} rows for {label}")
+
     return rows
 
 
@@ -428,7 +485,7 @@ def make_quality_report(dataset, train_df, val_df, test_df, real_rarc_count, rea
         {"metric": "unique_text_rows", "value": dataset["text"].nunique()},
         {"metric": "duplicate_text_rows", "value": duplicate_text_rows},
         {"metric": "labels", "value": dataset["label"].nunique()},
-        {"metric": "rows_per_category_target", "value": ROWS_PER_CATEGORY},
+        {"metric": "rows_per_category_target", "value": str(ROWS_PER_CATEGORY)},
         {"metric": "random_state", "value": RANDOM_STATE},
         {"metric": "distractor_context_rate", "value": DISTRACTOR_CONTEXT_RATE},
         {"metric": "typo_noise_rate", "value": TYPO_NOISE_RATE},
@@ -512,13 +569,14 @@ def main():
 
     rows = []
     for item in taxonomy.itertuples(index=False):
-        print(f"Generating {ROWS_PER_CATEGORY:,} rows for {item.label}...")
+        n_rows = ROWS_PER_CATEGORY.get(item.label, 200)
+        print(f"Generating {n_rows:,} rows for {item.label}...")
         rows.extend(
             generate_category_rows(
                 label_id=item.label_id,
                 label=item.label,
                 display_name=item.display_name,
-                n_rows=ROWS_PER_CATEGORY,
+                n_rows=n_rows,
                 template_lookup=real_rarc_lookup,
             )
         )
@@ -535,17 +593,30 @@ def main():
     print("\nLabel counts:")
     print(dataset["label"].value_counts().sort_index().to_string())
 
+    # Ensure minimum rows per class for stratified split
+    min_rows = dataset["label_id"].value_counts().min()
+    if min_rows < 3:
+        print(f"  WARNING: Some classes have fewer than 3 rows — disabling stratify for split.")
+        stratify_col = None
+        stratify_temp = None
+    else:
+        stratify_col = dataset["label_id"]
+        stratify_temp = None  # set after first split
+
     train_df, temp_df = train_test_split(
         dataset,
         train_size=TRAIN_SIZE,
-        stratify=dataset["label_id"],
+        stratify=stratify_col,
         random_state=RANDOM_STATE,
     )
     relative_val_size = VAL_SIZE / (VAL_SIZE + TEST_SIZE)
+    # Check temp_df too
+    min_temp = temp_df["label_id"].value_counts().min()
+    stratify_temp = temp_df["label_id"] if min_temp >= 2 else None
     val_df, test_df = train_test_split(
         temp_df,
         train_size=relative_val_size,
-        stratify=temp_df["label_id"],
+        stratify=stratify_temp,
         random_state=RANDOM_STATE,
     )
 

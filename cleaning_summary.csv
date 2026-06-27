@@ -1,0 +1,10 @@
+Metric,Value
+Original rows,9781673
+Final rows,9781673
+Rows dropped,0
+Original columns,28
+Final columns,22
+Columns dropped,6
+Null cells before,12668203
+Null cells after,1554719
+Zero values removed automatically,No - review only

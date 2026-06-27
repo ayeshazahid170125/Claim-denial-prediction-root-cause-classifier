@@ -1,0 +1,2 @@
+Status,Reason,Next_Step
+Deferred,Full-dataset frequency encoding was removed to avoid train/test contamination.,Fit high-cardinality encoders inside Step 08 train folds only.

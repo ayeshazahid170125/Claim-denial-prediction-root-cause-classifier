@@ -1,0 +1,6 @@
+metric,value
+total_root_cause_labels,10
+label_ids,0-9
+source_type,RCM root-cause taxonomy for RARC-style synthetic NLP data
+real_denial_labels_used,No
+next_step,Step 10 generates synthetic denial remark text from this taxonomy

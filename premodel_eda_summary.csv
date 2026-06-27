@@ -1,0 +1,9 @@
+metric,value
+rows,9781673
+columns,37
+target_threshold,0.6348467311679826
+approved_count,7825338
+denied_count,1956335
+denied_rate_pct,20.0
+chart_sample_rows,100000
+target_type,"synthetic proxy, not actual CMS denial label"

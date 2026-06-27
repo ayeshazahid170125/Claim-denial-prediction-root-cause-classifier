@@ -1,0 +1,20 @@
+,count,unique,top,freq,missing_count,missing_pct
+Rndrng_Prvdr_Last_Org_Name,9781673,290816,Patel,66815,0,0.0
+Rndrng_Prvdr_First_Name,9306806,84734,Michael,198493,474867,4.85
+Rndrng_Prvdr_MI,6316628,32,A,728780,3465045,35.42
+Rndrng_Prvdr_Crdntls,8701966,18018,MD,2761376,1079707,11.04
+Rndrng_Prvdr_Ent_Cd,9781673,2,I,9306818,0,0.0
+Rndrng_Prvdr_St1,9781673,425655,200 1st St Sw,30643,0,0.0
+Rndrng_Prvdr_St2,2143677,51376,Suite 200,78009,7637996,78.08
+Rndrng_Prvdr_City,9781673,12736,New York,115792,0,0.0
+Rndrng_Prvdr_State_Abrvtn,9781673,62,CA,832561,0,0.0
+Rndrng_Prvdr_State_FIPS,9781668,61,06,832561,5,0.0
+Rndrng_Prvdr_Zip5,9781672,20746,77030,40333,1,0.0
+Rndrng_Prvdr_RUCA_Desc,9776382,15,"Metropolitan area core: primary flow within an urbanized area of 50,000 and greater",8367594,5291,0.05
+Rndrng_Prvdr_Cntry,9781673,25,US,9781251,0,0.0
+Rndrng_Prvdr_Type,9781673,113,Diagnostic Radiology,1120030,0,0.0
+Rndrng_Prvdr_Mdcr_Prtcptg_Ind,9781673,2,Y,9779092,0,0.0
+HCPCS_Cd,9781673,6471,99214,523486,0,0.0
+HCPCS_Desc,9781673,6462,"Established patient office or other outpatient visit with moderate level of decision making, if using time, 30 minutes or more",523486,0,0.0
+HCPCS_Drug_Ind,9781673,2,N,9252060,0,0.0
+Place_Of_Srvc,9781673,2,O,6316970,0,0.0

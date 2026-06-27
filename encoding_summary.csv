@@ -1,0 +1,15 @@
+Column,Encoding,Action,Detail,Log_Column,Skew_Before,Skew_After,Note
+Rndrng_Prvdr_Ent_Cd,Binary,Mapped to Rndrng_Prvdr_Ent_Cd_bin,"Unknown/unmapped rows filled with -1: 0; before={'I': 9306818, 'O': 474855}",,,,
+Rndrng_Prvdr_Mdcr_Prtcptg_Ind,Binary,Mapped to Rndrng_Prvdr_Mdcr_Prtcptg_Ind_bin,"Unknown/unmapped rows filled with -1: 0; before={'Y': 9779092, 'N': 2581}",,,,
+HCPCS_Drug_Ind,Binary,Mapped to HCPCS_Drug_Ind_bin,"Unknown/unmapped rows filled with -1: 0; before={'N': 9252060, 'Y': 529613}",,,,
+Place_Of_Srvc,Binary,Mapped to Place_Of_Srvc_bin,"Unknown/unmapped rows filled with -1: 0; before={'O': 6316970, 'F': 3464703}",,,,
+Rndrng_Prvdr_Type,Deferred,Dropped from Step 06 baseline encoded file,Unique categories: 113; encode inside Step 08 cross-validation/training only,,,,
+Rndrng_Prvdr_State_Abrvtn,Deferred,Dropped from Step 06 baseline encoded file,Unique categories: 62; encode inside Step 08 cross-validation/training only,,,,
+HCPCS_Cd,Deferred,Dropped from Step 06 baseline encoded file,Unique categories: 6471; encode inside Step 08 cross-validation/training only,,,,
+Tot_Benes,,,,Tot_Benes_log,289.0136,0.9904,Original column kept in readable output; log version used for modeling
+Tot_Srvcs,,,,Tot_Srvcs_log,377.498,1.1948,Original column kept in readable output; log version used for modeling
+Tot_Bene_Day_Srvcs,,,,Tot_Bene_Day_Srvcs_log,332.3408,0.8964,Original column kept in readable output; log version used for modeling
+Avg_Sbmtd_Chrg,,,,Avg_Sbmtd_Chrg_log,26.4875,-0.0939,Original column kept in readable output; log version used for modeling
+Avg_Mdcr_Alowd_Amt,,,,Avg_Mdcr_Alowd_Amt_log,38.0605,-0.4954,Original column kept in readable output; log version used for modeling
+Avg_Mdcr_Pymt_Amt,,,,Avg_Mdcr_Pymt_Amt_log,37.9766,-0.3818,Original column kept in readable output; log version used for modeling
+Avg_Mdcr_Stdzd_Amt,,,,Avg_Mdcr_Stdzd_Amt_log,38.2054,-0.3911,Original column kept in readable output; log version used for modeling

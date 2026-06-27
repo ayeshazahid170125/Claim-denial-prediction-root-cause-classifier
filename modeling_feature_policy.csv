@@ -2,6 +2,7 @@ Column,Policy,Reason
 Rndrng_NPI,candidate,Available for Step 08 after train-fold preprocessing
 Rndrng_Prvdr_Last_Org_Name,candidate,Available for Step 08 after train-fold preprocessing
 Rndrng_Prvdr_First_Name,candidate,Available for Step 08 after train-fold preprocessing
+Rndrng_Prvdr_Crdntls,candidate,Available for Step 08 after train-fold preprocessing
 Rndrng_Prvdr_Ent_Cd,candidate,Available for Step 08 after train-fold preprocessing
 Rndrng_Prvdr_City,candidate,Available for Step 08 after train-fold preprocessing
 Rndrng_Prvdr_State_Abrvtn,candidate,Available for Step 08 after train-fold preprocessing
@@ -20,7 +21,6 @@ Avg_Sbmtd_Chrg,candidate,Available for Step 08 after train-fold preprocessing
 Avg_Mdcr_Alowd_Amt,candidate,Available for Step 08 after train-fold preprocessing
 Avg_Mdcr_Pymt_Amt,candidate,Available for Step 08 after train-fold preprocessing
 Avg_Mdcr_Stdzd_Amt,candidate,Available for Step 08 after train-fold preprocessing
-Crdntls_Group,candidate,Available for Step 08 after train-fold preprocessing
 flag_charge_lt_payment,candidate,Available for Step 08 after train-fold preprocessing
 flag_services_lt_benes,candidate,Available for Step 08 after train-fold preprocessing
 flag_zero_payment,candidate,Available for Step 08 after train-fold preprocessing

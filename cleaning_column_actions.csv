@@ -1,0 +1,8 @@
+Column,Action_Type,Rows_Affected,Null_Before,Null_After,Decision,Reason
+Rndrng_Prvdr_RUCA,Imputation,5291,5291,0,Filled nulls with mode value 1.0,RUCA is a structured geographic code; mode fill is conservative for limited missingness
+Rndrng_Prvdr_MI,Dropped,9781673,3470502,0,Dropped from cleaned dataset,High missingness and limited predictive value
+Rndrng_Prvdr_St1,Dropped,9781673,4,0,Dropped from cleaned dataset,Street address is too specific and noisy for modeling
+Rndrng_Prvdr_St2,Dropped,9781673,7638008,0,Dropped from cleaned dataset,Optional address field with high missingness
+Rndrng_Prvdr_State_FIPS,Dropped,9781673,5,0,Dropped from cleaned dataset,Redundant with state abbreviation
+Rndrng_Prvdr_Zip5,Dropped,9781673,15,0,Dropped from cleaned dataset,Very high cardinality; better handled later if needed
+Rndrng_Prvdr_RUCA_Desc,Dropped,9781673,14796,0,Dropped from cleaned dataset,Text duplicate of numeric RUCA code

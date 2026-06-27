@@ -1,0 +1,31 @@
+Column,Example_Category,Example_Count,Unique_Categories,Decision,Leakage_Control
+Rndrng_Prvdr_Type,Diagnostic Radiology,1120030,113,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_Type,Nurse Practitioner,976337,113,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_Type,Internal Medicine,805460,113,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_Type,Family Practice,772763,113,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_Type,Physician Assistant,587777,113,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_Type,Physical Therapist in Private Practice,408753,113,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_Type,Cardiology,382267,113,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_Type,Orthopedic Surgery,263471,113,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_Type,Ophthalmology,227762,113,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_Type,Emergency Medicine,210992,113,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_State_Abrvtn,CA,832561,62,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_State_Abrvtn,FL,708387,62,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_State_Abrvtn,TX,686647,62,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_State_Abrvtn,NY,621542,62,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_State_Abrvtn,PA,442429,62,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_State_Abrvtn,IL,398229,62,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_State_Abrvtn,OH,347838,62,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_State_Abrvtn,NC,346057,62,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_State_Abrvtn,NJ,321544,62,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+Rndrng_Prvdr_State_Abrvtn,MA,285422,62,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+HCPCS_Cd,99214,523486,6471,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+HCPCS_Cd,99213,473425,6471,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+HCPCS_Cd,99204,239126,6471,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+HCPCS_Cd,99232,176550,6471,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+HCPCS_Cd,99215,161945,6471,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+HCPCS_Cd,99203,158518,6471,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+HCPCS_Cd,G2211,146024,6471,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+HCPCS_Cd,99223,141311,6471,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+HCPCS_Cd,99233,131828,6471,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test
+HCPCS_Cd,99222,116128,6471,Deferred to Step 08 train-fold encoder,Fit category frequencies on training fold only; apply learned map to validation/test

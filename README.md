@@ -1,129 +1,104 @@
-# WellMind Data Solutions - Claim Denial Prediction & Root-Cause Classifier
+# Claim Denial Prediction & Root Cause Classifier
 
-WellMind Data Solutions built an end-to-end healthcare revenue cycle analytics system that predicts claim denial or underpayment risk before submission and explains the likely reason.
+Portfolio project for a healthcare Revenue Cycle Management (RCM) use case. The system predicts claim denial risk and classifies denial remark text into root-cause categories so billing teams can prioritize fixes before submission.
 
-The goal is simple: help billing teams fix risky claims first, instead of waiting for a rejection cycle.
+## What This Project Includes
 
-Healthcare providers lose time and revenue when claims are denied after submission. Most denial work happens too late: after the payer has already rejected the claim.
+- End-to-end data cleaning and feature engineering pipeline for CMS Medicare provider-service data
+- Denial risk model with feature attribution and threshold review outputs
+- RARC-style root-cause NLP classifier using TF-IDF and a DistilBERT comparison run
+- FastAPI inference service for denial risk, root cause, and combined predictions
+- Streamlit dashboard for a client-ready demo
+- Model documentation in `MODEL_CARD.md`
 
-This project demonstrates a prevention-first workflow:
-
-- predict denial or underpayment risk before submission
-- identify the top drivers behind the risk
-- classify denial reasons into root-cause categories
-- support faster first-pass resolution
-
-## Data Source
-
-Dataset:
-
-- CMS Medicare Physician & Other Practitioners - by Provider and Service, 2023
-- Public use file; no approval required
-
-Note:
-
-CMS public data does not include real payer denial labels. For this portfolio demo, the project uses a synthetic denial-risk proxy based on payment-to-charge behavior and synthetic RARC-style denial reason text for NLP root-cause classification.
-
-## Workflow
+## Project Structure
 
 ```text
-CMS Medicare Claims Data
-        |
-        v
-Data Quality Checks
-Nulls, duplicates, outliers, business-rule review
-        |
-        v
-Feature Engineering
-CPT/HCPCS, provider type, place of service, volume, payment patterns
-        |
-        v
-Denial-Risk Model
-Multiple ML models compared and tuned
-        |
-        v
-Explainability Layer
-Top risk drivers, feature importance, SHAP outputs
-        |
-        v
-Root-Cause NLP
-Synthetic RARC-style text classified into denial categories
-        |
-        v
-Business Output
-Risk score, likely reason, priority workqueue, ROI insight
+.
+|-- step01_eda.py
+|-- step02_null_detection.py
+|-- step03_duplicate_outlier.py
+|-- step04_cleaning.py
+|-- step05_credentials.py
+|-- step06_encoding.py
+|-- step07_premodel_eda.py
+|-- step08_model.py
+|-- step09_rarc_taxonomy.py
+|-- step10_synthetic_rarc_data.py
+|-- step10a_prepare_real_rarc_codes.py
+|-- step11_nlp_classifier.py
+|-- step12_fastapi.py
+|-- step13_Dashboard.py
+|-- run_pipeline.ps1
+|-- run_app.ps1
+|-- setup_project.ps1
+|-- sample_api_request.py
+|-- requirements.txt
+|-- MODEL_CARD.md
+`-- target_definition_card.md
 ```
 
-## Model Results
+Generated datasets, trained model binaries, charts, and large CMS source files are intentionally excluded from Git by `.gitignore`.
 
-Best model: **LightGBM Tuned**
-
-| Metric | Value |
-|---|---:|
-| Test ROC-AUC | 0.9819 |
-| Test PR-AUC | 0.9480 |
-| Test F1 | 0.8732 |
-| Test Precision | 0.8746 |
-| Test Recall | 0.8719 |
-| Test Brier Score | 0.0453 |
-
-The model concentrates high-risk claims into the top predicted risk groups.
-
-| Risk Group | Risk Rate | Lift | Captured Risk |
-|---:|---:|---:|---:|
-| Top 10% highest-risk claims | 99.39% | 4.97x | 49.69% |
-| Top 20% highest-risk claims | 75.23% | 3.76x | 37.61% |
-
-This means the billing team can focus review effort on the claims most likely to create payment problems.
-
-## Root-Cause Categories
-
-The NLP layer organizes denial reasons into operational categories:
-
-- eligibility
-- coding error
-- authorization
-- duplicate claim
-- not covered
-- timely filing
-- medical necessity
-- coordination of benefits
-- documentation
-- other administrative issues
-
-## What Was Built
-
-- CMS data pipeline
-- EDA and data quality reports
-- conservative cleaning workflow
-- feature engineering and encoding
-- denial-risk proxy model
-- model comparison and tuning
-- explainability artifacts
-- RARC root-cause taxonomy
-- synthetic RARC-style NLP dataset
-
-## Installation
-
-Create and activate a virtual environment:
+## Setup
 
 ```powershell
-py -m venv env
-.\env\Scripts\activate
+.\setup_project.ps1
 ```
 
-Install dependencies:
+Manual setup is also supported: create a Python virtual environment, activate it, upgrade `pip`, then install `requirements.txt`.
+
+## Run the Full Pipeline
 
 ```powershell
-py -m pip install -r requirements.txt
+.\run_pipeline.ps1
+```
+
+This runs the data preparation, modeling, taxonomy, and NLP training steps in order. The pipeline expects the CMS source data to be available locally in the same folder structure used during development.
+
+## Run the Demo App
+
+```powershell
+.\run_app.ps1
+```
+
+The script starts:
+
+- FastAPI at `http://localhost:8000`
+- Swagger docs at `http://localhost:8000/docs`
+- Streamlit dashboard in the browser
+
+## API Endpoints
+
+- `GET /health`
+- `POST /predict/denial-risk`
+- `POST /predict/root-cause`
+- `POST /predict/full`
+
+Example:
+
+```powershell
+Invoke-RestMethod `
+  -Uri "http://localhost:8000/predict/root-cause" `
+  -Method Post `
+  -ContentType "application/json" `
+  -Body '{"remark_text":"Claim denied because prior authorization was missing."}'
+```
+
+After the API starts, you can also run:
+
+```powershell
+python sample_api_request.py
 ```
 
 ## Important Notes
 
-Large generated datasets and model artifacts are not committed to GitHub. They can be regenerated by running the pipeline.
+- This is a portfolio/demo project, not a production billing system.
+- CMS public data does not contain real payer denial outcomes, so the denial target is a documented proxy.
+- The NLP dataset combines official RARC descriptions with synthetic RARC-style examples for underrepresented categories.
+- Do not use this project to process PHI or make real coverage/payment decisions.
 
-This is a public-data portfolio project. A production version should connect real payer remittance data, CARC/RARC codes, claim status files, appeal notes, and adjudication outcomes.
+## Data Sources
 
-If a provider submits $10M in claims, even a 5% denial-rate reduction can represent up to $500K protected or recovered.
-
-This project demonstrates the analytics foundation for that workflow: predict risk before submission, identify the likely root cause, and route the claim to the right fix team.
+- CMS Medicare Physician & Other Practitioners by Provider and Service public use data
+- X12 Remittance Advice Remark Code descriptions

@@ -1,0 +1,7 @@
+rule,count,interpretation
+Payment > Allowed,0,"Potential issue, review before removal"
+Charge < Payment,879,"Potential issue, review before removal"
+Services < Patients,34,"Potential issue, review before removal"
+Bad RUCA,0,Potential issue
+Bad NPI,0,Potential issue
+Non-US + state field,422,"Potential issue, not automatic error"

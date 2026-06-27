@@ -1,0 +1,4 @@
+Column,Zero_Count,Zero_Pct,Action,Reason
+Avg_Mdcr_Alowd_Amt,18,0.0002,Kept in dataset and documented as a review flag,Zero values are extremely rare and may be valid CMS payment outcomes; removing them could create bias
+Avg_Mdcr_Pymt_Amt,94,0.001,Kept in dataset and documented as a review flag,Zero values are extremely rare and may be valid CMS payment outcomes; removing them could create bias
+Avg_Mdcr_Stdzd_Amt,104,0.0011,Kept in dataset and documented as a review flag,Zero values are extremely rare and may be valid CMS payment outcomes; removing them could create bias

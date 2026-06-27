@@ -457,7 +457,7 @@ def main():
     if box_cols:
         fig, ax = plt.subplots(figsize=(12, 6))
         ax.boxplot([df_sample[col].dropna() for col in box_cols],
-                   labels=[col.replace("_log", "") for col in box_cols])
+                   tick_labels=[col.replace("_log", "") for col in box_cols])
         ax.set_title("Numeric Feature Distribution Overview")
         ax.set_ylabel("Log value")
         ax.tick_params(axis="x", rotation=20)

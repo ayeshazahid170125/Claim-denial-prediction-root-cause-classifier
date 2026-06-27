@@ -17,12 +17,12 @@ of payment-to-charge ratio rows as higher denial/underpayment risk.
 ## Formula
 payment_to_charge_ratio = Avg_Mdcr_Pymt_Amt_log / (Avg_Sbmtd_Chrg_log + 1e-6)
 
-denied = 1 when payment_to_charge_ratio <= 0.64182867
+denied = 1 when payment_to_charge_ratio <= 0.63484673
 
 denied = 0 otherwise
 
 ## Dataset Impact
-Rows evaluated: 9,660,647
+Rows evaluated: 9,781,673
 
 Synthetic denied rate: 20.0000%
 

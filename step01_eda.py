@@ -18,8 +18,8 @@ DATA_FILE = (
     BASE_DIR
     / "Medicare Physician & Other Practitioners - by Provider and Service"
     / "Medicare Physician & Other Practitioners - by Provider and Service"
-    / "2023"
-    / "MUP_PHY_R25_P05_V20_D23_Prov_Svc.csv"
+    / "2024"
+    / "PHY_R26_P05_V10_D24_Prov_Svc.csv"
 )
 
 NUMERIC_SUMMARY_PATH = BASE_DIR / "eda_numeric_summary.csv"

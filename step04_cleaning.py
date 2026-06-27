@@ -25,8 +25,8 @@ DATA_PATH = (
     BASE_DIR
     / "Medicare Physician & Other Practitioners - by Provider and Service"
     / "Medicare Physician & Other Practitioners - by Provider and Service"
-    / "2023"
-    / "MUP_PHY_R25_P05_V20_D23_Prov_Svc.csv"
+    / "2024"
+    / "PHY_R26_P05_V10_D24_Prov_Svc.csv"
 )
 
 OUTPUT_DATA_PATH = BASE_DIR / "Medicare_Cleaned_Week1.csv"

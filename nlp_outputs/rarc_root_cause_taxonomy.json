@@ -1,0 +1,102 @@
+[
+  {
+    "label_id": 0,
+    "label": "eligibility",
+    "display_name": "Eligibility / Coverage",
+    "business_definition": "Patient coverage, enrollment, member ID, or benefit eligibility issue.",
+    "buyer_explanation": "Coverage was inactive, missing, expired, or could not be verified for the service date.",
+    "example_signals": "inactive coverage; member not eligible; subscriber ID mismatch; benefit period issue",
+    "operational_owner": "Front desk / eligibility verification team",
+    "first_pass_fix": "Verify active coverage before claim submission and correct subscriber/member identifiers."
+  },
+  {
+    "label_id": 1,
+    "label": "coding_error",
+    "display_name": "Coding Error",
+    "business_definition": "Procedure, diagnosis, modifier, or code-combination issue.",
+    "buyer_explanation": "The submitted coding does not match payer rules, documentation, or claim format requirements.",
+    "example_signals": "invalid CPT; modifier missing; diagnosis inconsistent; code not billable",
+    "operational_owner": "Coding team",
+    "first_pass_fix": "Review CPT/HCPCS, ICD, modifier, and NCCI-style code-pair edits before submission."
+  },
+  {
+    "label_id": 2,
+    "label": "authorization",
+    "display_name": "Authorization / Referral",
+    "business_definition": "Prior authorization, referral, pre-certification, or approval number issue.",
+    "buyer_explanation": "The payer required approval before service, but authorization was missing, invalid, or expired.",
+    "example_signals": "prior auth missing; referral required; authorization expired; auth number invalid",
+    "operational_owner": "Authorization team",
+    "first_pass_fix": "Confirm authorization requirement and attach valid approval details before submission."
+  },
+  {
+    "label_id": 3,
+    "label": "duplicate_claim",
+    "display_name": "Duplicate Claim",
+    "business_definition": "Claim appears to duplicate a previous submission or paid claim.",
+    "buyer_explanation": "The payer identified the claim as already processed or matching another submitted claim.",
+    "example_signals": "duplicate service; already paid; repeat claim; same patient/date/service/provider",
+    "operational_owner": "Billing operations",
+    "first_pass_fix": "Check prior submissions and resubmit only corrected or appeal-ready claims."
+  },
+  {
+    "label_id": 4,
+    "label": "not_covered",
+    "display_name": "Coverage / Benefit Exclusion",
+    "business_definition": "Service is excluded, non-covered, investigational, bundled, or not payable under plan rules.",
+    "buyer_explanation": "The payer policy does not cover the submitted service for this patient or setting.",
+    "example_signals": "non-covered service; benefit exclusion; bundled service; policy limitation",
+    "operational_owner": "Revenue integrity / billing policy",
+    "first_pass_fix": "Validate benefit coverage and payer medical/payment policy before billing."
+  },
+  {
+    "label_id": 5,
+    "label": "timely_filing",
+    "display_name": "Timely Filing",
+    "business_definition": "Claim, corrected claim, or appeal submitted after payer filing deadline.",
+    "buyer_explanation": "The claim was received outside the allowed filing window.",
+    "example_signals": "filing limit exceeded; late submission; appeal window expired; proof of timely filing needed",
+    "operational_owner": "Billing operations",
+    "first_pass_fix": "Track payer filing limits and submit corrected claims before deadline."
+  },
+  {
+    "label_id": 6,
+    "label": "medical_necessity",
+    "display_name": "Medical Necessity",
+    "business_definition": "Payer does not consider the service medically necessary based on diagnosis or documentation.",
+    "buyer_explanation": "The clinical reason submitted does not support the billed service under payer criteria.",
+    "example_signals": "diagnosis does not support service; LCD/NCD criteria not met; necessity not established",
+    "operational_owner": "Clinical documentation / coding team",
+    "first_pass_fix": "Validate diagnosis support, payer policy criteria, and clinical documentation before submission."
+  },
+  {
+    "label_id": 7,
+    "label": "coordination_of_benefits",
+    "display_name": "Coordination of Benefits",
+    "business_definition": "Primary/secondary payer order or other insurance responsibility issue.",
+    "buyer_explanation": "The payer requires another carrier to process first or needs updated COB information.",
+    "example_signals": "other insurance primary; COB required; Medicare secondary; payer order mismatch",
+    "operational_owner": "Eligibility / billing team",
+    "first_pass_fix": "Verify primary payer order and collect updated COB information before submission."
+  },
+  {
+    "label_id": 8,
+    "label": "documentation",
+    "display_name": "Documentation",
+    "business_definition": "Missing, incomplete, illegible, or insufficient supporting documentation.",
+    "buyer_explanation": "The claim needs additional records, notes, orders, or documentation support.",
+    "example_signals": "medical records missing; operative note required; documentation incomplete; attachment missing",
+    "operational_owner": "Clinical documentation / HIM",
+    "first_pass_fix": "Attach required notes, orders, records, and payer-specific documentation before submission."
+  },
+  {
+    "label_id": 9,
+    "label": "other",
+    "display_name": "Other Administrative",
+    "business_definition": "Administrative or payer-processing reason not captured by the other root-cause buckets.",
+    "buyer_explanation": "The denial reason requires manual review because it is not one of the common root causes.",
+    "example_signals": "payer processing issue; claim format issue; provider enrollment review; manual review needed",
+    "operational_owner": "RCM analyst / billing supervisor",
+    "first_pass_fix": "Route to analyst review and update category mapping if a repeatable pattern emerges."
+  }
+]

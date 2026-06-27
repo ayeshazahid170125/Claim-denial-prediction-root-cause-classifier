@@ -21,8 +21,8 @@ DATA_PATH = (
     BASE_DIR
     / "Medicare Physician & Other Practitioners - by Provider and Service"
     / "Medicare Physician & Other Practitioners - by Provider and Service"
-    / "2023"
-    / "MUP_PHY_R25_P05_V20_D23_Prov_Svc.csv"
+    / "2024"
+    / "PHY_R26_P05_V10_D24_Prov_Svc.csv"
 )
 CHART_PATH = BASE_DIR / "outlier_detection_charts.png"
 DUPLICATE_SUMMARY_PATH = BASE_DIR / "duplicate_detection_summary.csv"
@@ -547,7 +547,7 @@ ax4.set_facecolor('white')
 plot_cols = ['Avg_Sbmtd_Chrg', 'Avg_Mdcr_Alowd_Amt', 'Avg_Mdcr_Pymt_Amt', 'Avg_Mdcr_Stdzd_Amt']
 plot_data  = [df[c].dropna().values for c in plot_cols]
 plot_labels = ['Sbmtd_Chrg', 'Alowd_Amt', 'Pymt_Amt', 'Stdzd_Amt']
-bp = ax4.boxplot(plot_data, labels=plot_labels, patch_artist=True,
+bp = ax4.boxplot(plot_data, tick_labels=plot_labels, patch_artist=True,
                  showfliers=True, flierprops=dict(marker='.', markersize=1, alpha=0.2, color='#E15759'))
 box_colors = ['#AEC6CF','#B5EAD7','#FFB7B2','#C7CEEA']
 for patch, col in zip(bp['boxes'], box_colors):

@@ -1,0 +1,4 @@
+check,count,note
+Full row duplicates,0,All 28 columns same
+Business key duplicates,0,Same NPI + HCPCS + Place
+NPI + HCPCS partial duplicates,363367,Same doctor/service across places

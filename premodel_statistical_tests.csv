@@ -1,0 +1,13 @@
+test,feature,target,statistic,p_value,dof,interpretation
+Chi-square,Place_Of_Srvc,denied,1433.1542554570863,0.0,1,Associated with target
+Chi-square,HCPCS_Drug_Ind,denied,1159.910403160725,3.1478238758302355e-254,1,Associated with target
+Chi-square,Rndrng_Prvdr_Ent_Cd,denied,212.99752779582101,3.047275501590255e-48,1,Associated with target
+Chi-square,Rndrng_Prvdr_Mdcr_Prtcptg_Ind,denied,4.051064746383428,0.04414349407057794,1,Associated with target
+Chi-square,Rndrng_Prvdr_State_Abrvtn,denied,1159.6189702815593,1.2625379398092044e-204,58,Associated with target
+ANOVA,Rndrng_Prvdr_Type,Avg_Mdcr_Pymt_Amt_log,227.5164830777774,0.0,,Group means differ
+Kruskal-Wallis,Rndrng_Prvdr_Type,Avg_Mdcr_Pymt_Amt_log,15931.529476419197,0.0,,Group distributions differ
+Welch t-test,HCPCS_Drug_Ind,Avg_Mdcr_Pymt_Amt_log,28.436940523365127,6.181148038180459e-166,,Avg_Mdcr_Pymt_Amt_log differs between N and Y
+Mann-Whitney U,HCPCS_Drug_Ind,Avg_Mdcr_Pymt_Amt_log,282326560.5,3.08975714285828e-57,,Avg_Mdcr_Pymt_Amt_log distribution differs between N and Y
+Welch t-test,Place_Of_Srvc,Avg_Mdcr_Pymt_Amt_log,-50.15366280772352,0.0,,Avg_Mdcr_Pymt_Amt_log differs between O and F
+Mann-Whitney U,Place_Of_Srvc,Avg_Mdcr_Pymt_Amt_log,946019631.0,0.0,,Avg_Mdcr_Pymt_Amt_log distribution differs between O and F
+D'Agostino normality,Avg_Mdcr_Pymt_Amt_log,normal distribution,162.21471355192332,5.963792306848258e-36,,Not normally distributed

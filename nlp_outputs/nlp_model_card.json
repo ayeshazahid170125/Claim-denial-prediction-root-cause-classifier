@@ -1,0 +1,105 @@
+{
+  "project": "WellMind denial root-cause NLP classifier",
+  "task": "10-class synthetic RARC-style denial reason classification",
+  "best_model": "TF-IDF Logistic Regression",
+  "best_test_metrics": {
+    "accuracy": 0.9833333333333333,
+    "precision_weighted": 0.9838949275362319,
+    "recall_weighted": 0.9833333333333333,
+    "f1_weighted": 0.983362150485041,
+    "f1_macro": 0.9804095068926901
+  },
+  "data_source": "Official X12 RARC descriptions augmented with synthetic claim-review context.",
+  "official_rarc_descriptions_used": true,
+  "real_denial_text_used": false,
+  "source_summary": {
+    "source_type_available": true,
+    "source_counts": [
+      {
+        "split": "test",
+        "source_type": "official_rarc",
+        "rows": 49
+      },
+      {
+        "split": "test",
+        "source_type": "synthetic_rarc_style",
+        "rows": 251
+      },
+      {
+        "split": "train",
+        "source_type": "official_rarc",
+        "rows": 223
+      },
+      {
+        "split": "train",
+        "source_type": "synthetic_rarc_style",
+        "rows": 1172
+      },
+      {
+        "split": "validation",
+        "source_type": "official_rarc",
+        "rows": 43
+      },
+      {
+        "split": "validation",
+        "source_type": "synthetic_rarc_style",
+        "rows": 256
+      }
+    ],
+    "uses_official_rarc_descriptions": true
+  },
+  "labels": {
+    "0": "eligibility",
+    "1": "coding_error",
+    "2": "authorization",
+    "3": "duplicate_claim",
+    "4": "not_covered",
+    "5": "timely_filing",
+    "6": "medical_necessity",
+    "7": "coordination_of_benefits",
+    "8": "documentation",
+    "9": "other"
+  },
+  "leakage_check": {
+    "train_val_overlap": 0,
+    "train_test_overlap": 0,
+    "val_test_overlap": 0
+  },
+  "quality_warnings": [],
+  "metric_interpretation": {
+    "synthetic_benchmark": true,
+    "real_world_generalization_claim": false,
+    "perfect_score_threshold": 0.995
+  },
+  "model_comparison": [
+    {
+      "model": "TF-IDF Logistic Regression",
+      "training_seconds": 1.69,
+      "test_accuracy": 0.9833333333333333,
+      "test_precision_weighted": 0.9838949275362319,
+      "test_recall_weighted": 0.9833333333333333,
+      "test_f1_weighted": 0.983362150485041,
+      "test_f1_macro": 0.9804095068926901
+    },
+    {
+      "model": "DistilBERT",
+      "training_seconds": 80.84,
+      "test_accuracy": 0.8866666666666667,
+      "test_precision_weighted": 0.9015542188063534,
+      "test_recall_weighted": 0.8866666666666667,
+      "test_f1_weighted": 0.8836768244286903,
+      "test_f1_macro": 0.8720036624541496
+    }
+  ],
+  "limitations": [
+    "Official RARC descriptions improve terminology credibility but are still not real claim-level payer remittance records.",
+    "Synthetic claim-review context is useful for demo/model plumbing, not a substitute for real payer remittance data.",
+    "Near-perfect metrics can occur because category-specific RARC language can be easier than noisy real payer remark text.",
+    "A production deployment should retrain or calibrate with real CARC/RARC remarks and adjudication outcomes."
+  ],
+  "recommended_next_steps": [
+    "Add real payer remittance remark text when available.",
+    "Evaluate on a time-based or payer-based external holdout.",
+    "Continue adding ambiguous, cross-category, and noisy examples to the synthetic generator."
+  ]
+}

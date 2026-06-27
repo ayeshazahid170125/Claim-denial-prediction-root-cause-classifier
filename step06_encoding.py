@@ -26,7 +26,7 @@ warnings.filterwarnings("ignore")
 
 
 BASE_DIR = Path(__file__).resolve().parent
-INPUT_PATH = BASE_DIR / "Medicare_Cleaned_Credentials.csv"
+INPUT_PATH = BASE_DIR / "Medicare_Cleaned_Week1.csv"
 OUTLIER_OUTPUT_PATH = BASE_DIR / "Medicare_Cleaned_Outliers.csv"
 ENCODED_OUTPUT_PATH = BASE_DIR / "Medicare_Cleaned_Encoded.csv"
 RULE_AUDIT_PATH = BASE_DIR / "feature_rule_review_summary.csv"

@@ -1,0 +1,11 @@
+label_id,label,display_name
+0,eligibility,Eligibility / Coverage
+1,coding_error,Coding Error
+2,authorization,Authorization / Referral
+3,duplicate_claim,Duplicate Claim
+4,not_covered,Coverage / Benefit Exclusion
+5,timely_filing,Timely Filing
+6,medical_necessity,Medical Necessity
+7,coordination_of_benefits,Coordination of Benefits
+8,documentation,Documentation
+9,other,Other Administrative

@@ -1,0 +1,16 @@
+metric,value
+total_rows,1994
+unique_text_rows,1994
+duplicate_text_rows,0
+labels,10
+rows_per_category_target,"{'eligibility': 150, 'authorization': 150, 'duplicate_claim': 150, 'medical_necessity': 150, 'timely_filing': 100, 'coding_error': 200, 'coordination_of_benefits': 200, 'not_covered': 250, 'other': 250, 'documentation': 400}"
+random_state,42
+distractor_context_rate,0.35
+typo_noise_rate,0.08
+real_rarc_csv_path,D:\well_minded_datasolution\project_01\nlp_outputs\real_rarc_codes.csv
+real_rarc_codes_loaded,932
+labels_using_real_rarc,10
+train_size,1395
+validation_size,299
+test_size,300
+real_denial_text_used,Official RARC descriptions augmented with synthetic context

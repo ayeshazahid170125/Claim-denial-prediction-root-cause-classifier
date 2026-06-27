@@ -1,0 +1,21 @@
+Column,Dtype,Null Type,Flag Category,Count,Percentage
+Rndrng_Prvdr_First_Name,str,Standard NaN/None,Null / Missing,474867,4.85
+Rndrng_Prvdr_First_Name,str,"String ""Unknown""",Null / Missing,145,0.0
+Rndrng_Prvdr_MI,str,Standard NaN/None,Null / Missing,3465045,35.42
+Rndrng_Prvdr_MI,str,"String ""-""",Null / Missing,42,0.0
+Rndrng_Prvdr_MI,str,"Placeholder ""-""",Null / Missing,42,0.0
+Rndrng_Prvdr_MI,str,"Placeholder ""X""",Null / Missing,5364,0.05
+Rndrng_Prvdr_Crdntls,str,Standard NaN/None,Null / Missing,1079707,11.04
+Rndrng_Prvdr_Crdntls,str,"String ""NONE""",Null / Missing,14,0.0
+Rndrng_Prvdr_St1,str,"String ""Unknown""",Null / Missing,4,0.0
+Rndrng_Prvdr_St2,str,Standard NaN/None,Null / Missing,7637996,78.08
+Rndrng_Prvdr_St2,str,"String ""-""",Null / Missing,3,0.0
+Rndrng_Prvdr_St2,str,"Placeholder ""-""",Null / Missing,3,0.0
+Rndrng_Prvdr_State_FIPS,str,Standard NaN/None,Null / Missing,5,0.0
+Rndrng_Prvdr_Zip5,str,Standard NaN/None,Null / Missing,1,0.0
+Rndrng_Prvdr_RUCA,float64,Standard NaN/None,Null / Missing,5291,0.05
+Rndrng_Prvdr_RUCA_Desc,str,Standard NaN/None,Null / Missing,5291,0.05
+Rndrng_Prvdr_RUCA_Desc,str,"String ""Unknown""",Null / Missing,9505,0.1
+Avg_Mdcr_Alowd_Amt,float64,Zero (0) values - review only,Review Only,18,0.0
+Avg_Mdcr_Pymt_Amt,float64,Zero (0) values - review only,Review Only,94,0.0
+Avg_Mdcr_Stdzd_Amt,float64,Zero (0) values - review only,Review Only,104,0.0

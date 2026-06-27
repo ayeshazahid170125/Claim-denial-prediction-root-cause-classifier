@@ -168,7 +168,7 @@ TEST_SIZE       = 0.20
 VAL_SIZE        = 0.20        # fraction of the 80% trainval
 
 # Laptop-safe row caps — increase for server runs
-TRAINING_MAX_ROWS     = 1_500_000
+TRAINING_MAX_ROWS     = 2_500_000
 RF_MAX_ROWS           = 600_000
 ET_MAX_ROWS           = 600_000
 TUNING_MAX_ROWS       = 400_000
@@ -658,170 +658,84 @@ skf_cv = StratifiedKFold(n_splits=CV_FOLDS, shuffle=True, random_state=RANDOM_ST
 
 tuning_rows = []
 
-def optuna_tune_xgb() -> tuple:
-    def objective(trial):
-        params = {
-            "n_estimators"    : trial.suggest_int("n_estimators", 200, 800),
-            "max_depth"       : trial.suggest_int("max_depth", 3, 9),
-            "learning_rate"   : trial.suggest_float("learning_rate", 0.01, 0.20, log=True),
-            "subsample"       : trial.suggest_float("subsample", 0.55, 1.0),
-            "colsample_bytree": trial.suggest_float("colsample_bytree", 0.55, 1.0),
-            "min_child_weight": trial.suggest_int("min_child_weight", 1, 15),
-            "gamma"           : trial.suggest_float("gamma", 0.0, 0.5),
-            "reg_alpha"       : trial.suggest_float("reg_alpha", 1e-4, 5.0, log=True),
-            "reg_lambda"      : trial.suggest_float("reg_lambda", 1e-4, 5.0, log=True),
-            "objective"       : "binary:logistic",
-            "eval_metric"     : "aucpr",
-            "tree_method"     : "hist",
-            "scale_pos_weight": scale_pos_weight,
-            "random_state"    : RANDOM_STATE,
-            "n_jobs"          : -1,
-            "verbosity"       : 0,
-        }
-        scores = []
-        for tr_idx, vl_idx in skf_cv.split(X_tune, y_tune):
-            m = xgb.XGBClassifier(**params)
-            m.fit(X_tune.iloc[tr_idx].values, y_tune.iloc[tr_idx], verbose=False)
-            p = m.predict_proba(X_tune.iloc[vl_idx].values)[:, 1]
-            scores.append(average_precision_score(y_tune.iloc[vl_idx], p))
-        return float(np.mean(scores))
-
-    study = optuna.create_study(
-        direction="maximize",
-        sampler=optuna.samplers.TPESampler(seed=RANDOM_STATE),
-        pruner=optuna.pruners.MedianPruner(n_startup_trials=8),
-    )
-    study.optimize(objective, n_trials=N_OPTUNA_TRIALS, show_progress_bar=False)
-    return study.best_params, study.best_value, study
 
 
-def optuna_tune_lgb() -> tuple:
-    def objective(trial):
-        params = {
-            "n_estimators"    : trial.suggest_int("n_estimators", 200, 800),
-            "max_depth"       : trial.suggest_int("max_depth", 3, 10),
-            "learning_rate"   : trial.suggest_float("learning_rate", 0.01, 0.20, log=True),
-            "num_leaves"      : trial.suggest_int("num_leaves", 15, 127),
-            "subsample"       : trial.suggest_float("subsample", 0.55, 1.0),
-            "colsample_bytree": trial.suggest_float("colsample_bytree", 0.55, 1.0),
-            "min_child_samples": trial.suggest_int("min_child_samples", 5, 100),
-            "reg_alpha"       : trial.suggest_float("reg_alpha", 1e-4, 5.0, log=True),
-            "reg_lambda"      : trial.suggest_float("reg_lambda", 1e-4, 5.0, log=True),
-            "class_weight"    : "balanced",
-            "random_state"    : RANDOM_STATE,
-            "n_jobs"          : -1,
-            "verbose"         : -1,
-        }
-        scores = []
-        for tr_idx, vl_idx in skf_cv.split(X_tune, y_tune):
-            m = lgb.LGBMClassifier(**params)
-            m.fit(X_tune.iloc[tr_idx], y_tune.iloc[tr_idx],
-                  eval_set=[(X_tune.iloc[vl_idx], y_tune.iloc[vl_idx])],
-                  callbacks=[lgb.early_stopping(20, verbose=False),
-                              lgb.log_evaluation(period=-1)])
-            p = m.predict_proba(X_tune.iloc[vl_idx])[:, 1]
-            scores.append(average_precision_score(y_tune.iloc[vl_idx], p))
-        return float(np.mean(scores))
 
-    study = optuna.create_study(
-        direction="maximize",
-        sampler=optuna.samplers.TPESampler(seed=RANDOM_STATE),
-        pruner=optuna.pruners.MedianPruner(n_startup_trials=8),
-    )
-    study.optimize(objective, n_trials=N_OPTUNA_TRIALS, show_progress_bar=False)
-    return study.best_params, study.best_value, study
+# --- HistGradientBoosting Tuning (BEST MODEL) ---
+print("Tuning HistGradientBoosting ...")
+t0 = time.time()
 
+if OPTUNA_AVAILABLE:
+    def optuna_tune_histgb() -> tuple:
+        def objective(trial):
+            params = {
+                "max_iter"           : trial.suggest_int("max_iter", 200, 600),
+                "max_depth"          : trial.suggest_int("max_depth", 4, 12),
+                "learning_rate"      : trial.suggest_float("learning_rate", 0.01, 0.20, log=True),
+                "min_samples_leaf"   : trial.suggest_int("min_samples_leaf", 10, 100),
+                "max_leaf_nodes"     : trial.suggest_int("max_leaf_nodes", 15, 127),
+                "l2_regularization"  : trial.suggest_float("l2_regularization", 1e-4, 5.0, log=True),
+                "class_weight"       : "balanced",
+                "random_state"       : RANDOM_STATE,
+            }
+            scores = []
+            for tr_idx, vl_idx in skf_cv.split(X_tune, y_tune):
+                m = HistGradientBoostingClassifier(**params)
+                m.fit(X_tune.iloc[tr_idx], y_tune.iloc[tr_idx])
+                p = m.predict_proba(X_tune.iloc[vl_idx])[:, 1]
+                scores.append(average_precision_score(y_tune.iloc[vl_idx], p))
+            return float(np.mean(scores))
 
-# --- XGBoost Tuning ---
-if XGB_AVAILABLE:
-    print("Tuning XGBoost ...")
-    t0 = time.time()
-    if OPTUNA_AVAILABLE:
-        xgb_best_p, xgb_best_score, xgb_study = optuna_tune_xgb()
-    else:
-        # RandomizedSearchCV fallback
-        rscv = RandomizedSearchCV(
-            xgb.XGBClassifier(objective="binary:logistic", eval_metric="logloss",
-                               tree_method="hist", scale_pos_weight=scale_pos_weight,
-                               random_state=RANDOM_STATE, n_jobs=-1, verbosity=0),
-            {"n_estimators": randint(200, 700), "max_depth": randint(3, 9),
-             "learning_rate": loguniform(0.01, 0.18), "subsample": uniform(0.6, 0.4),
-             "colsample_bytree": uniform(0.6, 0.4), "gamma": uniform(0, 0.4)},
-            n_iter=RANDOMSEARCH_ITER, scoring="average_precision",
-            cv=skf_cv, random_state=RANDOM_STATE, n_jobs=1,
+        study = optuna.create_study(
+            direction="maximize",
+            sampler=optuna.samplers.TPESampler(seed=RANDOM_STATE),
+            pruner=optuna.pruners.MedianPruner(n_startup_trials=8),
         )
-        rscv.fit(X_tune, y_tune)
-        xgb_best_p = rscv.best_params_
-        xgb_best_score = rscv.best_score_
-        xgb_study = None
+        study.optimize(objective, n_trials=N_OPTUNA_TRIALS, show_progress_bar=False)
+        return study.best_params, study.best_value, study
 
-    print(f"  XGBoost tuning done: {elapsed(t0)}  |  best CV PR-AUC={xgb_best_score:.4f}")
+    histgb_best_p, histgb_best_score, histgb_study = optuna_tune_histgb()
+else:
+    # RandomizedSearchCV fallback
+    from scipy.stats import randint, loguniform
+    rscv = RandomizedSearchCV(
+        HistGradientBoostingClassifier(class_weight="balanced", random_state=RANDOM_STATE),
+        {"max_iter": randint(200, 600), "max_depth": randint(4, 12),
+         "learning_rate": loguniform(0.01, 0.18), "min_samples_leaf": randint(10, 100),
+         "max_leaf_nodes": randint(15, 127), "l2_regularization": loguniform(1e-4, 5.0)},
+        n_iter=RANDOMSEARCH_ITER, scoring="average_precision",
+        cv=skf_cv, random_state=RANDOM_STATE, n_jobs=1,
+    )
+    rscv.fit(X_tune, y_tune)
+    histgb_best_p = rscv.best_params_
+    histgb_best_score = rscv.best_score_
+    histgb_study = None
 
-    xgb_tuned_params = {**xgb_best_p,
-                        "objective": "binary:logistic", "eval_metric": "aucpr",
-                        "tree_method": "hist", "scale_pos_weight": scale_pos_weight,
-                        "early_stopping_rounds": 30,
-                        "random_state": RANDOM_STATE, "n_jobs": -1, "verbosity": 0}
-    xgb_tuned = xgb.XGBClassifier(**xgb_tuned_params)
-    xgb_tuned.fit(X_train.values, y_train,
-                  eval_set=[(X_val.values, y_val)], verbose=False)
-    val_p  = xgb_tuned.predict_proba(X_val.values)[:, 1]
-    thresh = find_best_threshold(y_val, val_p)
-    val_m  = evaluate_at_threshold(y_val, val_p, thresh)
-    test_p = xgb_tuned.predict_proba(X_test.values)[:, 1]
-    test_m = evaluate_at_threshold(y_test, test_p, thresh)
-    print(f"  XGBoost Tuned  val PR-AUC={val_m['pr_auc']:.4f}  test PR-AUC={test_m['pr_auc']:.4f}  F1={test_m['f1']:.4f}")
+print(f"  HistGB tuning done: {elapsed(t0)}  |  best CV PR-AUC={histgb_best_score:.4f}")
 
-    row = {"model": "XGBoost Tuned", "tuned": True}
-    row.update({f"val_{k}": v for k, v in val_m.items() if k != "pred"})
-    row.update({f"test_{k}": v for k, v in test_m.items() if k != "pred"})
-    results.append(row)
-    trained_models["XGBoost Tuned"] = {
-        "model": xgb_tuned, "test_proba": test_p,
-        "val_metrics": val_m, "test_metrics": test_m,
-    }
-    tuning_rows.append({"model": "XGBoost Tuned", "cv_pr_auc": xgb_best_score,
-                        "best_params": json.dumps(xgb_best_p)})
+histgb_tuned = HistGradientBoostingClassifier(
+    **histgb_best_p,
+    class_weight="balanced",
+    random_state=RANDOM_STATE,
+)
+histgb_tuned.fit(X_train, y_train)
+val_p  = histgb_tuned.predict_proba(X_val)[:, 1]
+thresh = find_best_threshold(y_val, val_p)
+val_m  = evaluate_at_threshold(y_val, val_p, thresh)
+test_p = histgb_tuned.predict_proba(X_test)[:, 1]
+test_m = evaluate_at_threshold(y_test, test_p, thresh)
+print(f"  HistGB Tuned  val PR-AUC={val_m['pr_auc']:.4f}  test PR-AUC={test_m['pr_auc']:.4f}  F1={test_m['f1']:.4f}")
 
-# --- LightGBM Tuning ---
-if LGB_AVAILABLE:
-    print("Tuning LightGBM ...")
-    t0 = time.time()
-    if OPTUNA_AVAILABLE:
-        lgb_best_p, lgb_best_score, lgb_study = optuna_tune_lgb()
-    else:
-        lgb_best_p = {}
-        lgb_best_score = 0.0
-        lgb_study = None
-        print("  Optuna not available; using LightGBM baseline params.")
-
-    print(f"  LightGBM tuning done: {elapsed(t0)}  |  best CV PR-AUC={lgb_best_score:.4f}")
-
-    lgb_tuned_params = {**lgb_best_p,
-                        "class_weight": "balanced",
-                        "random_state": RANDOM_STATE, "n_jobs": -1, "verbose": -1}
-    lgb_tuned = lgb.LGBMClassifier(**lgb_tuned_params)
-    lgb_tuned.fit(X_train, y_train,
-                  eval_set=[(X_val, y_val)],
-                  callbacks=[lgb.early_stopping(30, verbose=False),
-                              lgb.log_evaluation(period=-1)])
-    val_p  = lgb_tuned.predict_proba(X_val)[:, 1]
-    thresh = find_best_threshold(y_val, val_p)
-    val_m  = evaluate_at_threshold(y_val, val_p, thresh)
-    test_p = lgb_tuned.predict_proba(X_test)[:, 1]
-    test_m = evaluate_at_threshold(y_test, test_p, thresh)
-    print(f"  LightGBM Tuned  val PR-AUC={val_m['pr_auc']:.4f}  test PR-AUC={test_m['pr_auc']:.4f}  F1={test_m['f1']:.4f}")
-
-    row = {"model": "LightGBM Tuned", "tuned": True}
-    row.update({f"val_{k}": v for k, v in val_m.items() if k != "pred"})
-    row.update({f"test_{k}": v for k, v in test_m.items() if k != "pred"})
-    results.append(row)
-    trained_models["LightGBM Tuned"] = {
-        "model": lgb_tuned, "test_proba": test_p,
-        "val_metrics": val_m, "test_metrics": test_m,
-    }
-    tuning_rows.append({"model": "LightGBM Tuned", "cv_pr_auc": lgb_best_score,
-                        "best_params": json.dumps(lgb_best_p)})
+row = {"model": "HistGB Tuned", "tuned": True}
+row.update({f"val_{k}": v for k, v in val_m.items() if k != "pred"})
+row.update({f"test_{k}": v for k, v in test_m.items() if k != "pred"})
+results.append(row)
+trained_models["HistGB Tuned"] = {
+    "model": histgb_tuned, "test_proba": test_p,
+    "val_metrics": val_m, "test_metrics": test_m,
+}
+tuning_rows.append({"model": "HistGB Tuned", "cv_pr_auc": histgb_best_score,
+                    "best_params": json.dumps(histgb_best_p)})
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -1262,34 +1176,30 @@ plt.close()
 print("Saved: charts/threshold_curve.png")
 
 # --- Optuna History (if available) ---
-if OPTUNA_AVAILABLE and XGB_AVAILABLE and xgb_study is not None:
-    xgb_vals = [t.value for t in xgb_study.trials if t.value is not None]
-    lgb_vals = [t.value for t in lgb_study.trials if t.value is not None] if LGB_AVAILABLE and lgb_study is not None else []
+if OPTUNA_AVAILABLE and histgb_study is not None:
+    histgb_vals = [t.value for t in histgb_study.trials if t.value is not None]
 
-    fig, axes = plt.subplots(1, 2 if lgb_vals else 1, figsize=(14 if lgb_vals else 8, 5))
-    if not lgb_vals:
-        axes = [axes]
+    if histgb_vals:
+        fig, ax = plt.subplots(figsize=(9, 5))
+        trial_nums = range(1, len(histgb_vals) + 1)
+        ax.plot(trial_nums, histgb_vals, "b-o", ms=4, lw=1.5, label="Each trial", alpha=0.6)
+        ax.plot(
+            trial_nums,
+            [max(histgb_vals[:i + 1]) for i in range(len(histgb_vals))],
+            "r-",
+            lw=2.5,
+            label="Best so far",
+        )
+        ax.set_title("HistGradientBoosting Optuna (AUC-PR)")
+        ax.set_xlabel("Trial")
+        ax.set_ylabel("AUC-PR (CV)")
+        ax.legend()
 
-    axes[0].plot(range(1, len(xgb_vals)+1), xgb_vals, "b-o", ms=4, lw=1.5, label="Each trial", alpha=0.6)
-    axes[0].plot(range(1, len(xgb_vals)+1),
-                 [max(xgb_vals[:i+1]) for i in range(len(xgb_vals))],
-                 "r-", lw=2.5, label="Best so far")
-    axes[0].set_title("XGBoost Optuna (AUC-PR)"); axes[0].legend()
-    axes[0].set_xlabel("Trial"); axes[0].set_ylabel("AUC-PR (CV)")
-
-    if lgb_vals:
-        axes[1].plot(range(1, len(lgb_vals)+1), lgb_vals, "g-o", ms=4, lw=1.5, label="Each trial", alpha=0.6)
-        axes[1].plot(range(1, len(lgb_vals)+1),
-                     [max(lgb_vals[:i+1]) for i in range(len(lgb_vals))],
-                     "r-", lw=2.5, label="Best so far")
-        axes[1].set_title("LightGBM Optuna (AUC-PR)"); axes[1].legend()
-        axes[1].set_xlabel("Trial"); axes[1].set_ylabel("AUC-PR (CV)")
-
-    plt.suptitle("Hyperparameter Optimization History", fontsize=13, fontweight="bold")
-    plt.tight_layout()
-    plt.savefig(CHART_DIR / "optuna_history.png", dpi=150, bbox_inches="tight")
-    plt.close()
-    print("Saved: charts/optuna_history.png")
+        plt.suptitle("Hyperparameter Optimization History", fontsize=13, fontweight="bold")
+        plt.tight_layout()
+        plt.savefig(CHART_DIR / "optuna_history.png", dpi=150, bbox_inches="tight")
+        plt.close()
+        print("Saved: charts/optuna_history.png")
 
 
 # ═══════════════════════════════════════════════════════════════

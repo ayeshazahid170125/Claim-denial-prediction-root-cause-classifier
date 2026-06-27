@@ -1,0 +1,17 @@
+Column,Placeholder,Rows_Fixed,Action
+Rndrng_Prvdr_First_Name,Unknown,145,Converted to NaN
+Rndrng_Prvdr_First_Name,UNKNOWN,0,No match
+Rndrng_Prvdr_First_Name,unknown,0,No match
+Rndrng_Prvdr_MI,-,42,Converted to NaN
+Rndrng_Prvdr_MI,0,15,Converted to NaN
+Rndrng_Prvdr_MI,(,36,Converted to NaN
+Rndrng_Prvdr_MI,X,5364,Converted to NaN
+Rndrng_Prvdr_MI,x,0,No match
+Rndrng_Prvdr_St1,Unknown,4,Converted to NaN
+Rndrng_Prvdr_St1,UNKNOWN,0,No match
+Rndrng_Prvdr_St1,unknown,0,No match
+Rndrng_Prvdr_St2,0,12,Converted to NaN
+Rndrng_Prvdr_Zip5,0,14,Converted to NaN
+Rndrng_Prvdr_RUCA_Desc,Unknown,9505,Converted to NaN
+Rndrng_Prvdr_RUCA_Desc,UNKNOWN,0,No match
+Rndrng_Prvdr_RUCA_Desc,unknown,0,No match

@@ -1,0 +1,7 @@
+Flag,Count,Pct,Action,Explanation
+flag_charge_lt_payment,879,0.009,Flag retained; rows not removed automatically,Submitted charge lower than Medicare payment. Review before removal.
+flag_services_lt_benes,34,0.0003,Flag retained; rows not removed automatically,Service count lower than beneficiary count. Review before removal.
+flag_zero_payment,94,0.001,Flag retained; rows not removed automatically,Zero/non-positive payment. Kept for review because zero may be meaningful.
+flag_zero_allowed,18,0.0002,Flag retained; rows not removed automatically,Zero/non-positive allowed amount. Kept for review.
+flag_invalid_state,1745,0.0178,Flag retained; rows not removed automatically,State code outside US state/territory list.
+flag_non_us_country,422,0.0043,Flag retained; rows not removed automatically,"Non-US country kept as review signal, not automatic error."
