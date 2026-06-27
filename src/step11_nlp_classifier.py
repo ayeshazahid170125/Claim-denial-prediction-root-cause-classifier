@@ -14,19 +14,19 @@ If torch + transformers are installed and the DistilBERT model is available,
 it also fine-tunes DistilBERT and compares results.
 
 Inputs:
-    nlp_outputs/rarc_train.csv
-    nlp_outputs/rarc_val.csv
-    nlp_outputs/rarc_test.csv
-    nlp_outputs/rarc_root_cause_taxonomy.csv
+    outputs/nlp/rarc_train.csv
+    outputs/nlp/rarc_val.csv
+    outputs/nlp/rarc_test.csv
+    outputs/nlp/rarc_root_cause_taxonomy.csv
 
 Outputs:
-    nlp_outputs/models/tfidf_root_cause_classifier.pkl
-    nlp_outputs/models/distilbert_root_cause_classifier/
-    nlp_outputs/nlp_model_comparison.csv
-    nlp_outputs/nlp_test_predictions.csv
-    nlp_outputs/nlp_training_history.csv
-    nlp_outputs/nlp_model_card.json
-    nlp_outputs/nlp_charts/
+    outputs/nlp/models/tfidf_root_cause_classifier.pkl
+    outputs/nlp/models/distilbert_root_cause_classifier/
+    outputs/nlp/nlp_model_comparison.csv
+    outputs/nlp/nlp_test_predictions.csv
+    outputs/nlp/nlp_training_history.csv
+    outputs/nlp/nlp_model_card.json
+    outputs/nlp/nlp_charts/
 """
 
 from pathlib import Path
@@ -78,16 +78,18 @@ IS_KAGGLE = Path("/kaggle/input").exists()
 
 # Works in .py scripts, notebooks, and Kaggle.
 try:
-    BASE_DIR = Path(__file__).resolve().parent
+    PROJECT_ROOT = Path(__file__).resolve().parents[1]
 except NameError:
-    BASE_DIR = Path.cwd()
+    PROJECT_ROOT = Path.cwd()
+
+BASE_DIR = PROJECT_ROOT
 
 if IS_KAGGLE:
     INPUT_ROOT = Path("/kaggle/input")
-    NLP_DIR = Path("/kaggle/working/nlp_outputs")
+    NLP_DIR = Path("/kaggle/working/outputs/nlp")
 else:
-    INPUT_ROOT = BASE_DIR / "nlp_outputs"
-    NLP_DIR = BASE_DIR / "nlp_outputs"
+    INPUT_ROOT = PROJECT_ROOT / "outputs" / "nlp"
+    NLP_DIR = PROJECT_ROOT / "outputs" / "nlp"
 
 MODEL_DIR = NLP_DIR / "models"
 CHART_DIR = NLP_DIR / "nlp_charts"
@@ -105,8 +107,8 @@ def find_input_file(filename):
         if matches:
             return matches[0]
 
-    # Fallback for local runs where files are under nlp_outputs.
-    return BASE_DIR / "nlp_outputs" / filename
+    # Fallback for local runs where files are under outputs/nlp.
+    return PROJECT_ROOT / "outputs" / "nlp" / filename
 
 
 TRAIN_PATH = find_input_file("rarc_train.csv")

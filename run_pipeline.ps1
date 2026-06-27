@@ -5,15 +5,15 @@ Set-Location $PSScriptRoot
 Write-Host "Running Project 01 data + ML + NLP pipeline..." -ForegroundColor Cyan
 
 $steps = @(
-    "step01_eda.py",
-    "step02_null_detection.py",
-    "step03_duplicate_outlier.py",
-    "step04_cleaning.py",
-    "step05_credentials.py",
-    "step06_encoding.py",
-    "step07_premodel_eda.py",
-    "step08_model.py",
-    "step09_rarc_taxonomy.py"
+    "src\step01_eda.py",
+    "src\step02_null_detection.py",
+    "src\step03_duplicate_outlier.py",
+    "src\step04_cleaning.py",
+    "src\step05_credentials.py",
+    "src\step06_encoding.py",
+    "src\step07_premodel_eda.py",
+    "src\step08_model.py",
+    "src\step09_rarc_taxonomy.py"
 )
 
 foreach ($step in $steps) {
@@ -21,15 +21,15 @@ foreach ($step in $steps) {
     python $step
 }
 
-if ((Test-Path "real_rarc_codes.csv") -and -not (Test-Path "nlp_outputs\real_rarc_codes.csv")) {
-    New-Item -ItemType Directory -Force -Path "nlp_outputs" | Out-Null
-    Copy-Item "real_rarc_codes.csv" "nlp_outputs\real_rarc_codes.csv"
-    Write-Host "`nCopied real_rarc_codes.csv to nlp_outputs\real_rarc_codes.csv" -ForegroundColor Green
+if ((Test-Path "real_rarc_codes.csv") -and -not (Test-Path "outputs\nlp\real_rarc_codes.csv")) {
+    New-Item -ItemType Directory -Force -Path "outputs\nlp" | Out-Null
+    Copy-Item "real_rarc_codes.csv" "outputs\nlp\real_rarc_codes.csv"
+    Write-Host "`nCopied real_rarc_codes.csv to outputs\nlp\real_rarc_codes.csv" -ForegroundColor Green
 }
 
 $nlpSteps = @(
-    "step10_synthetic_rarc_data.py",
-    "step11_nlp_classifier.py"
+    "src\step10_synthetic_rarc_data.py",
+    "src\step11_nlp_classifier.py"
 )
 
 foreach ($step in $nlpSteps) {

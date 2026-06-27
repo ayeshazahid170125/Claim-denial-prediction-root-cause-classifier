@@ -13,7 +13,10 @@ warnings.filterwarnings("ignore")
 # ============================================================
 # CONFIGURATION
 # ============================================================
-BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+BASE_DIR = PROJECT_ROOT
+REPORT_DIR = BASE_DIR / "reports" / "eda"
+REPORT_DIR.mkdir(parents=True, exist_ok=True)
 DATA_FILE = (
     BASE_DIR
     / "Medicare Physician & Other Practitioners - by Provider and Service"
@@ -22,9 +25,9 @@ DATA_FILE = (
     / "PHY_R26_P05_V10_D24_Prov_Svc.csv"
 )
 
-NUMERIC_SUMMARY_PATH = BASE_DIR / "eda_numeric_summary.csv"
-CATEGORICAL_SUMMARY_PATH = BASE_DIR / "eda_categorical_summary.csv"
-COLUMN_PROFILE_PATH = BASE_DIR / "eda_column_profile.csv"
+NUMERIC_SUMMARY_PATH = REPORT_DIR / "eda_numeric_summary.csv"
+CATEGORICAL_SUMMARY_PATH = REPORT_DIR / "eda_categorical_summary.csv"
+COLUMN_PROFILE_PATH = REPORT_DIR / "eda_column_profile.csv"
 
 # ============================================================
 # DATA LOAD

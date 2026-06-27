@@ -26,6 +26,9 @@ model_outputs/
 nlp_outputs/models/
 nlp_outputs/*.png
 nlp_outputs/*.xlsx
+outputs/nlp/models/
+outputs/nlp/*.png
+outputs/nlp/*.xlsx
 
 # Generated charts/reports
 charts/

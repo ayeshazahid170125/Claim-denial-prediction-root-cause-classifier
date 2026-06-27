@@ -55,16 +55,21 @@ from scipy.stats import chi2_contingency, f_oneway, kruskal, mannwhitneyu, ttest
 warnings.filterwarnings("ignore")
 
 
-BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+BASE_DIR = PROJECT_ROOT
+REPORT_DIR = BASE_DIR / "reports" / "modeling"
+DOCS_DIR = BASE_DIR / "docs"
+REPORT_DIR.mkdir(parents=True, exist_ok=True)
+DOCS_DIR.mkdir(parents=True, exist_ok=True)
 INPUT_FILE = BASE_DIR / "Medicare_Cleaned_Outliers.csv"
 FINAL_WITH_TARGET = BASE_DIR / "Medicare_Final_WithTarget.csv"
-SUMMARY_PATH = BASE_DIR / "premodel_eda_summary.csv"
-SPECIALTY_SUMMARY_PATH = BASE_DIR / "premodel_denial_by_specialty.csv"
-HCPCS_SUMMARY_PATH = BASE_DIR / "premodel_top_denied_hcpcs.csv"
-PLACE_SUMMARY_PATH = BASE_DIR / "premodel_denial_by_place.csv"
-STATS_SUMMARY_PATH = BASE_DIR / "premodel_statistical_tests.csv"
-TARGET_CARD_PATH = BASE_DIR / "target_definition_card.md"
-FEATURE_POLICY_PATH = BASE_DIR / "modeling_feature_policy.csv"
+SUMMARY_PATH = REPORT_DIR / "premodel_eda_summary.csv"
+SPECIALTY_SUMMARY_PATH = REPORT_DIR / "premodel_denial_by_specialty.csv"
+HCPCS_SUMMARY_PATH = REPORT_DIR / "premodel_top_denied_hcpcs.csv"
+PLACE_SUMMARY_PATH = REPORT_DIR / "premodel_denial_by_place.csv"
+STATS_SUMMARY_PATH = REPORT_DIR / "premodel_statistical_tests.csv"
+TARGET_CARD_PATH = DOCS_DIR / "target_definition_card.md"
+FEATURE_POLICY_PATH = REPORT_DIR / "modeling_feature_policy.csv"
 CHART_DIR = BASE_DIR / "charts"
 
 RANDOM_STATE = 42

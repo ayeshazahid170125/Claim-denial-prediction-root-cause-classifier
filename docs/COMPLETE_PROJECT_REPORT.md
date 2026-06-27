@@ -74,7 +74,7 @@ What RARC codes are:
 
 How they were used:
 
-- The official RARC page text was copied and parsed into `nlp_outputs/real_rarc_codes.csv`.
+- The official RARC page text was copied and parsed into `outputs/nlp/real_rarc_codes.csv`.
 - A mapping was created from real RARC codes to the 10 project root-cause categories.
 - Step 10 now uses official RARC descriptions when available and augments them with synthetic claim-review context.
 
@@ -302,7 +302,7 @@ What was done:
 
 - Added a parser that converts copied X12 RARC page text into a clean CSV.
 - Output file:
-  - `nlp_outputs/real_rarc_codes.csv`
+  - `outputs/nlp/real_rarc_codes.csv`
 
 How it works:
 
@@ -370,7 +370,7 @@ What was done:
 - Fine-tuned DistilBERT on Kaggle GPU and compared it with a TF-IDF + Logistic Regression baseline.
 - Made the code Kaggle-compatible:
   - inputs can be auto-detected from `/kaggle/input`
-  - outputs save to `/kaggle/working/nlp_outputs`
+  - outputs save to `/kaggle/working/outputs/nlp`
 - Added leakage checks:
   - train/validation overlap
   - train/test overlap

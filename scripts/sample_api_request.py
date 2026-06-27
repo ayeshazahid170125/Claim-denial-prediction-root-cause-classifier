@@ -1,7 +1,7 @@
 """Small smoke-test client for the FastAPI demo.
 
 Run after starting the API:
-    python sample_api_request.py
+    python scripts/sample_api_request.py
 """
 
 import json

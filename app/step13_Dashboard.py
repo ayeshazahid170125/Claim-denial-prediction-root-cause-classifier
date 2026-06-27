@@ -1,8 +1,8 @@
 """
 STEP 13 - Streamlit Dashboard (Client-Ready Design)
 Claim Denial Prediction System
-Run: streamlit run step13_Dashboard.py
-Requires: uvicorn step12_Fastapi:app --reload --port 8000
+Run: streamlit run app/step13_Dashboard.py
+Requires: uvicorn app.step12_fastapi:app --reload --port 8000
 """
 
 from pathlib import Path
@@ -11,8 +11,9 @@ import requests
 import streamlit as st
 
 API_URL = "http://localhost:8000"
-BASE_DIR = Path(__file__).resolve().parent
-NLP_DIR  = BASE_DIR / "nlp_outputs"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+BASE_DIR = PROJECT_ROOT
+NLP_DIR  = PROJECT_ROOT / "outputs" / "nlp"
 MODEL_DIR = BASE_DIR / "model_outputs"
 
 st.set_page_config(
@@ -896,7 +897,7 @@ with col_result:
                 </div>
                 """, unsafe_allow_html=True)
             elif remark_text.strip():
-                st.info("Root cause model not loaded — check nlp_outputs/models/tfidf_root_cause_classifier.pkl")
+                st.info("Root cause model not loaded — check outputs/nlp/models/tfidf_root_cause_classifier.pkl")
 
             st.markdown(
                 f"<div class='disclaimer-bar'>&#9200; {result['latency_ms']}ms &nbsp;&middot;&nbsp; "

@@ -25,14 +25,17 @@ import pandas as pd
 warnings.filterwarnings("ignore")
 
 
-BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+BASE_DIR = PROJECT_ROOT
+REPORT_DIR = BASE_DIR / "reports" / "modeling"
+REPORT_DIR.mkdir(parents=True, exist_ok=True)
 INPUT_PATH = BASE_DIR / "Medicare_Cleaned_Week1.csv"
 OUTLIER_OUTPUT_PATH = BASE_DIR / "Medicare_Cleaned_Outliers.csv"
 ENCODED_OUTPUT_PATH = BASE_DIR / "Medicare_Cleaned_Encoded.csv"
-RULE_AUDIT_PATH = BASE_DIR / "feature_rule_review_summary.csv"
-ENCODING_SUMMARY_PATH = BASE_DIR / "encoding_summary.csv"
-FREQUENCY_MAP_PATH = BASE_DIR / "frequency_encoding_maps.csv"
-DEFERRED_ENCODING_PATH = BASE_DIR / "encoding_deferred_high_cardinality.csv"
+RULE_AUDIT_PATH = REPORT_DIR / "feature_rule_review_summary.csv"
+ENCODING_SUMMARY_PATH = REPORT_DIR / "encoding_summary.csv"
+FREQUENCY_MAP_PATH = REPORT_DIR / "frequency_encoding_maps.csv"
+DEFERRED_ENCODING_PATH = REPORT_DIR / "encoding_deferred_high_cardinality.csv"
 
 
 NUMERIC_COLS = [

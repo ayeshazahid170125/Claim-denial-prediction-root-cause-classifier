@@ -24,8 +24,9 @@ import pandas as pd
 warnings.filterwarnings("ignore")
 
 
-BASE_DIR = Path(__file__).resolve().parent
-OUTPUT_DIR = BASE_DIR / "nlp_outputs"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+BASE_DIR = PROJECT_ROOT
+OUTPUT_DIR = PROJECT_ROOT / "outputs" / "nlp"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 TAXONOMY_PATH = OUTPUT_DIR / "rarc_root_cause_taxonomy.csv"

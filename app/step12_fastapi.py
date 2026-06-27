@@ -3,7 +3,7 @@ STEP 12 - FastAPI Inference Endpoint
 WellMind Data Solutions - Claim Denial Prediction System
 
 Run:
-    uvicorn step12_fastapi:app --reload --port 8000
+    uvicorn app.step12_fastapi:app --reload --port 8000
 
 Endpoints:
     POST /predict/denial-risk     - XGBoost denial risk score + SHAP drivers
@@ -32,9 +32,10 @@ from pydantic import BaseModel, Field, field_validator
 # ============================================================
 # PATHS
 # ============================================================
-BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+BASE_DIR = PROJECT_ROOT
 MODEL_DIR = BASE_DIR / "model_outputs"
-NLP_DIR = BASE_DIR / "nlp_outputs"
+NLP_DIR = PROJECT_ROOT / "outputs" / "nlp"
 
 XGBOOST_PATH = MODEL_DIR / "best_denial_risk_model.pkl"
 TFIDF_PATH = NLP_DIR / "models" / "tfidf_root_cause_classifier.pkl"
@@ -477,7 +478,7 @@ def predict_root_cause_endpoint(claim: ClaimInput):
     if result is None:
         raise HTTPException(
             status_code=503,
-            detail="TF-IDF model not loaded. Run Step 11 first and place tfidf_pipeline.pkl in nlp_outputs/.",
+            detail="TF-IDF model not loaded. Run Step 11 first and place tfidf_pipeline.pkl in outputs/nlp/.",
         )
     return result
 

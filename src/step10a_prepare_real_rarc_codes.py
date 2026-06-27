@@ -3,11 +3,11 @@ STEP 10A - Prepare Official RARC Code CSV
 WellMind Data Solutions - Claim Denial Prediction System
 
 Run:
-    python step10a_prepare_real_rarc_codes.py path_to_x12_copied_text.txt
+    python src/step10a_prepare_real_rarc_codes.py path_to_x12_copied_text.txt
 
 Purpose:
 Parse copied text from the X12 Remittance Advice Remark Codes page into
-nlp_outputs/real_rarc_codes.csv for Step 10.
+outputs/nlp/real_rarc_codes.csv for Step 10.
 
 Expected output columns:
     code, description, start_date, last_modified, notes
@@ -24,8 +24,9 @@ import sys
 import pandas as pd
 
 
-BASE_DIR = Path(__file__).resolve().parent
-OUTPUT_DIR = BASE_DIR / "nlp_outputs"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+BASE_DIR = PROJECT_ROOT
+OUTPUT_DIR = PROJECT_ROOT / "outputs" / "nlp"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 OUTPUT_PATH = OUTPUT_DIR / "real_rarc_codes.csv"
 

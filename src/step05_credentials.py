@@ -18,12 +18,15 @@ import pandas as pd
 warnings.filterwarnings("ignore")
 
 
-BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+BASE_DIR = PROJECT_ROOT
+REPORT_DIR = BASE_DIR / "reports" / "cleaning"
+REPORT_DIR.mkdir(parents=True, exist_ok=True)
 FILE_PATH = BASE_DIR / "Medicare_Cleaned_Week1.csv"
 SAVE_PATH = BASE_DIR / "Medicare_Cleaned_Credentials.csv"
-GROUP_SUMMARY_PATH = BASE_DIR / "credentials_group_summary.csv"
-MAPPING_AUDIT_PATH = BASE_DIR / "credentials_mapping_audit.csv"
-OTHER_REVIEW_PATH = BASE_DIR / "credentials_other_review.csv"
+GROUP_SUMMARY_PATH = REPORT_DIR / "credentials_group_summary.csv"
+MAPPING_AUDIT_PATH = REPORT_DIR / "credentials_mapping_audit.csv"
+OTHER_REVIEW_PATH = REPORT_DIR / "credentials_other_review.csv"
 
 CREDENTIAL_COL = "Rndrng_Prvdr_Crdntls"
 PAYMENT_COL = "Avg_Mdcr_Pymt_Amt"

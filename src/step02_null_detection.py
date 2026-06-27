@@ -13,7 +13,10 @@ warnings.filterwarnings("ignore")
 # ============================================================
 # LOAD DATA
 # ============================================================
-BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+BASE_DIR = PROJECT_ROOT
+REPORT_DIR = BASE_DIR / "reports" / "eda"
+REPORT_DIR.mkdir(parents=True, exist_ok=True)
 
 DATA_PATH = (
     BASE_DIR
@@ -22,7 +25,7 @@ DATA_PATH = (
     / "2024"
     / "PHY_R26_P05_V10_D24_Prov_Svc.csv"
 )
-SUMMARY_PATH = BASE_DIR / "null_detection_summary.csv"
+SUMMARY_PATH = REPORT_DIR / "null_detection_summary.csv"
 
 if not DATA_PATH.exists():
     raise FileNotFoundError(f"File nahi mili: {DATA_PATH}")

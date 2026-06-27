@@ -15,7 +15,14 @@ warnings.filterwarnings("ignore")
 # ============================================================
 # LOAD DATA
 # ============================================================
-BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+BASE_DIR = PROJECT_ROOT
+EDA_REPORT_DIR = BASE_DIR / "reports" / "eda"
+MODELING_REPORT_DIR = BASE_DIR / "reports" / "modeling"
+CHART_DIR = BASE_DIR / "charts"
+EDA_REPORT_DIR.mkdir(parents=True, exist_ok=True)
+MODELING_REPORT_DIR.mkdir(parents=True, exist_ok=True)
+CHART_DIR.mkdir(parents=True, exist_ok=True)
 
 DATA_PATH = (
     BASE_DIR
@@ -24,10 +31,10 @@ DATA_PATH = (
     / "2024"
     / "PHY_R26_P05_V10_D24_Prov_Svc.csv"
 )
-CHART_PATH = BASE_DIR / "outlier_detection_charts.png"
-DUPLICATE_SUMMARY_PATH = BASE_DIR / "duplicate_detection_summary.csv"
-OUTLIER_SUMMARY_PATH = BASE_DIR / "outlier_numeric_summary.csv"
-BUSINESS_RULE_SUMMARY_PATH = BASE_DIR / "business_rule_review_summary.csv"
+CHART_PATH = CHART_DIR / "outlier_detection_charts.png"
+DUPLICATE_SUMMARY_PATH = EDA_REPORT_DIR / "duplicate_detection_summary.csv"
+OUTLIER_SUMMARY_PATH = EDA_REPORT_DIR / "outlier_numeric_summary.csv"
+BUSINESS_RULE_SUMMARY_PATH = MODELING_REPORT_DIR / "business_rule_review_summary.csv"
 
 if not DATA_PATH.exists():
     raise FileNotFoundError(f"File nahi mili: {DATA_PATH}")

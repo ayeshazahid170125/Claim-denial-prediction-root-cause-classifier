@@ -156,7 +156,8 @@ warnings.filterwarnings("ignore")
 # ═══════════════════════════════════════════════════════════════
 # CONFIGURATION  — adjust these before running
 # ═══════════════════════════════════════════════════════════════
-BASE_DIR        = Path(__file__).resolve().parent
+PROJECT_ROOT    = Path(__file__).resolve().parents[1]
+BASE_DIR        = PROJECT_ROOT
 INPUT_ENCODED   = BASE_DIR / "Medicare_Cleaned_Encoded.csv"
 INPUT_OUTLIERS  = BASE_DIR / "Medicare_Cleaned_Outliers.csv"
 OUTPUT_DIR      = BASE_DIR / "model_outputs"

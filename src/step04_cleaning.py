@@ -20,7 +20,10 @@ import pandas as pd
 warnings.filterwarnings("ignore")
 
 
-BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+BASE_DIR = PROJECT_ROOT
+REPORT_DIR = BASE_DIR / "reports" / "cleaning"
+REPORT_DIR.mkdir(parents=True, exist_ok=True)
 DATA_PATH = (
     BASE_DIR
     / "Medicare Physician & Other Practitioners - by Provider and Service"
@@ -30,11 +33,11 @@ DATA_PATH = (
 )
 
 OUTPUT_DATA_PATH = BASE_DIR / "Medicare_Cleaned_Week1.csv"
-NULL_COMPARISON_PATH = BASE_DIR / "cleaning_null_before_after.csv"
-STRING_FIXES_PATH = BASE_DIR / "cleaning_string_null_fixes.csv"
-ZERO_REVIEW_PATH = BASE_DIR / "cleaning_zero_review_flags.csv"
-COLUMN_ACTIONS_PATH = BASE_DIR / "cleaning_column_actions.csv"
-SUMMARY_PATH = BASE_DIR / "cleaning_summary.csv"
+NULL_COMPARISON_PATH = REPORT_DIR / "cleaning_null_before_after.csv"
+STRING_FIXES_PATH = REPORT_DIR / "cleaning_string_null_fixes.csv"
+ZERO_REVIEW_PATH = REPORT_DIR / "cleaning_zero_review_flags.csv"
+COLUMN_ACTIONS_PATH = REPORT_DIR / "cleaning_column_actions.csv"
+SUMMARY_PATH = REPORT_DIR / "cleaning_summary.csv"
 
 
 def load_dataset(path):
