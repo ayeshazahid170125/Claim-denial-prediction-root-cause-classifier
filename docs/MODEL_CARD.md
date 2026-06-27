@@ -24,7 +24,7 @@ Both models are part of a portfolio demonstration built on public data. They are
 Estimates the probability that a given Medicare claim will be denied, based on provider, billing, and utilization characteristics, before the claim is submitted.
 
 ### Model Type
-LightGBM ensemble classifier (gradient-boosted decision trees), with feature importance explainability.
+Tuned HistGradientBoosting classifier, selected after comparison against multiple baseline models. Feature importance and SHAP-style outputs are produced for explainability review.
 
 ### Training Data
 - **Source:** CMS Medicare Fee-for-Service Provider Utilization & Payment Data (PUF), 2023 release
@@ -41,11 +41,16 @@ LightGBM ensemble classifier (gradient-boosted decision trees), with feature imp
 
 ### Performance
 | Metric | Value |
-|---|---|
-| Test set accuracy | ~80% (80,058 / 100,000 correct) |
-| Predicted high-risk rows | 22,817 |
-| Actual high-risk rows | 19,942 |
-| Primary evaluation metric | PR-AUC (chosen for class imbalance) |
+|---|---:|
+| Best model | HistGB Tuned |
+| Test accuracy | 0.9468 |
+| Test balanced accuracy | 0.9166 |
+| Test precision | 0.8677 |
+| Test recall | 0.8662 |
+| Test F1 | 0.8669 |
+| Test ROC-AUC | 0.9820 |
+| Test PR-AUC | 0.9457 |
+| Primary evaluation metric | PR-AUC |
 
 ### Explainability
 Feature-importance-based driver attribution is shown alongside each prediction, highlighting which inputs pushed the risk score up or down.
@@ -73,7 +78,7 @@ Reads the free-text reason for a claim denial and classifies it into one of 10 s
 TF-IDF vectorization + Logistic Regression (selected as best model). DistilBERT was also trained and evaluated as a comparison.
 
 ### Training Data
-- **Source:** Official X12 Remittance Advice Remark Code (RARC) descriptions (932 codes), augmented with structured synthetic claim-review context for categories with limited real-code coverage.
+- **Source:** Official X12 Remittance Advice Remark Code (RARC) descriptions, augmented with structured synthetic claim-review context for categories with limited real-code coverage.
 - **Size:** 1,994 labeled examples (1,395 train / 299 validation / 300 test)
 - **Important disclosure:** The underlying RARC code-to-category mapping is based on real, official X12 codes. Where a category had very few official codes (e.g., timely filing had only 2), additional synthetic training examples were generated to reach a workable training set size. This mix is documented per-row in the dataset (`source_type` column: `official_rarc` or `synthetic_rarc_style`) and is not presented as real-world payer remittance text.
 
@@ -92,8 +97,8 @@ TF-IDF vectorization + Logistic Regression (selected as best model). DistilBERT 
 ### Performance
 | Model | Test Accuracy | Test F1 (weighted) | Training Time |
 |---|---|---|---|
-| **TF-IDF + Logistic Regression (selected)** | 98.3% | 0.9834 | 1.9 sec |
-| DistilBERT (comparison) | 86.0% | 0.8452 | 80 sec |
+| **TF-IDF + Logistic Regression (selected)** | 98.3% | 0.9834 | 1.7 sec |
+| DistilBERT (comparison) | 88.7% | 0.8837 | 80.8 sec |
 
 TF-IDF outperformed DistilBERT on this dataset primarily due to the limited training set size and the presence of distinctive keyword patterns in RARC-style text — conditions that favor a lexical model over a deep transformer.
 

@@ -6,7 +6,7 @@
 **Business Hook:** Before a claim is submitted, the system estimates denial/underpayment risk and explains the likely reason, so the billing team can correct the claim before the normal rejection cycle.  
 **Domain:** Healthcare Revenue Cycle Management (RCM)  
 **Core Methods:** Predictive Machine Learning, Explainability, NLP Root-Cause Classification  
-**Current Status:** Month 1 and Month 2 are substantially complete. Month 3 NLP classifier is complete as a reproducible pipeline. FastAPI and dashboard remain as next delivery items.
+**Current Status:** Data pipeline, ML model, NLP classifier, FastAPI endpoint, and Streamlit dashboard are complete as a portfolio/demo system. Remaining production work would require real payer denial labels and real remittance validation.
 
 ---
 
@@ -242,17 +242,59 @@ What was done:
 - Selected the best model using validation performance.
 - Produced explainability outputs and model reports.
 
+Model result setup:
+
+- Six baseline models were trained and evaluated.
+- The final model run used a stratified 2.5M-row modeling sample:
+  - 1.5M train rows
+  - 500K validation rows
+  - 500K test rows
+- Model selection used validation PR-AUC because the target is imbalanced.
+- Final performance below is reported on the untouched holdout test set.
+
+Baseline model comparison:
+
+| Model | Test PR-AUC | Test F1 | ROC-AUC | Status |
+|---|---:|---:|---:|---|
+| **HistGB Tuned (BEST)** | **0.9457** | **0.8669** | **0.9820** | **Winner - Deployed** |
+| HistGradientBoosting | 0.9186 | 0.8313 | 0.9723 | Baseline |
+| LightGBM | 0.9091 | 0.8207 | 0.9703 | Baseline |
+| XGBoost | 0.9004 | 0.8112 | 0.9670 | Baseline |
+| Random Forest | 0.8531 | 0.7608 | 0.9509 | Baseline |
+| Extra Trees | 0.8117 | 0.7200 | 0.9346 | Baseline |
+| Logistic Regression | 0.7757 | 0.6927 | 0.9210 | Baseline |
+
 Best model result:
 
 | Metric | Value |
 |---|---:|
-| Best model | LightGBM Tuned |
-| Test ROC-AUC | 0.9819 |
-| Test PR-AUC | 0.9480 |
-| Test F1 | 0.8732 |
-| Test Precision | 0.8746 |
-| Test Recall | 0.8719 |
-| Test Brier Score | 0.0453 |
+| Best model | HistGB Tuned |
+| Test threshold | 0.6922 |
+| Test accuracy | 0.9468 |
+| Test balanced accuracy | 0.9166 |
+| Test precision | 0.8677 |
+| Test recall | 0.8662 |
+| Test F1 | 0.8669 |
+| Test ROC-AUC | 0.9820 |
+| Test PR-AUC | 0.9457 |
+| Test Brier Score | 0.0512 |
+
+Hyperparameter tuning:
+
+- HistGradientBoosting was tuned using Optuna Bayesian optimization.
+- The tuning process used 40 trials and 3-fold cross-validation on a 400K-row tuning sample.
+- Best cross-validation PR-AUC: **0.9228**.
+
+Best parameters:
+
+| Parameter | Value |
+|---|---:|
+| max_iter | 557 |
+| max_depth | 10 |
+| learning_rate | 0.1456 |
+| min_samples_leaf | 77 |
+| max_leaf_nodes | 106 |
+| l2_regularization | 1.7093 |
 
 Business interpretation:
 
@@ -521,7 +563,13 @@ Production validation would require:
 
 ### FastAPI and Dashboard Status
 
-FastAPI endpoint and dashboard are not yet fully completed in the current delivered codebase. They are the next implementation steps.
+FastAPI and Streamlit dashboard entrypoints are included in the current codebase:
+
+- FastAPI app: `app/step12_fastapi.py`
+- Streamlit dashboard: `app/step13_Dashboard.py`
+- Launcher script: `run_app.ps1`
+
+These components are suitable for a local portfolio demo. Production deployment would still require authentication, monitoring, secure data handling, real payer validation, and environment-specific configuration.
 
 ---
 
@@ -555,14 +603,14 @@ This ROI should be validated with client-specific denial rates and recovery rate
 | Month 1 - EDA | Complete | EDA, nulls, duplicates, outliers, premodel EDA |
 | Month 1 - Feature engineering | Complete | Domain and model-stage features created |
 | Month 2 - ML models | Complete | Multiple models compared |
-| Month 2 - Tuning | Complete | XGBoost/LightGBM tuning included |
+| Month 2 - Tuning | Complete | HistGradientBoosting tuned with Optuna; baselines compared |
 | Month 2 - Evaluation | Complete | ROC-AUC, PR-AUC, F1, precision, recall, calibration |
 | Month 2 - Explainability | Mostly complete | Feature importance/SHAP-style outputs prepared |
 | Month 3 - RARC taxonomy | Complete | 10 root-cause labels |
 | Month 3 - NLP dataset | Complete | Official RARC descriptions + synthetic context |
 | Month 3 - NLP classifier | Complete | TF-IDF baseline plus DistilBERT fine-tuned on Kaggle GPU; best F1 0.9896 |
-| Month 3 - FastAPI endpoint | Pending | Next task |
-| Month 4 - Dashboard | Pending | Next task |
+| Month 3 - FastAPI endpoint | Complete | Local inference API in `app/step12_fastapi.py` |
+| Month 4 - Dashboard | Complete | Streamlit dashboard in `app/step13_Dashboard.py` |
 | Month 4 - ROI brief | Pending | Can be created from current outputs |
 | Month 4 - Final write-up | In progress | This report is part of final documentation |
 
