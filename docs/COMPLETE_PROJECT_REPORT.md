@@ -647,7 +647,7 @@ This ROI should be validated with client-specific denial rates and recovery rate
 
 ---
 
-## 10. Final Summary for Supervisor
+## 10. Final Summary 
 
 This project has built a professional end-to-end foundation for a claim denial prediction and root-cause classification system. The CMS-based ML pipeline predicts denial/underpayment risk using a carefully documented proxy target, compares multiple models, applies tuning, and produces strong evaluation results. The NLP pipeline has been upgraded from simple synthetic templates to official X12 RARC descriptions augmented with realistic claim-review context, making the root-cause classifier more credible and aligned with real healthcare remittance standards.
 
