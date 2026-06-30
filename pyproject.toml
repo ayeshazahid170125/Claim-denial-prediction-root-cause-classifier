@@ -8,14 +8,11 @@ dependencies = [
     "scipy",
     "scikit-learn",
     "joblib",
-    "openpyxl",
-    "xgboost",
     "lightgbm",
     "shap",
     "fastapi",
-    "uvicorn[standard]",
+    "uvicorn",
     "pydantic",
-    "requests",
 ]
 
 [tool.vercel]
