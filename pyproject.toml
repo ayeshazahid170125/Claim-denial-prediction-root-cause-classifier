@@ -12,6 +12,7 @@ dependencies = [
     "fastapi",
     "uvicorn",
     "pydantic",
+    "shap"
 ]
 
 [tool.vercel]
