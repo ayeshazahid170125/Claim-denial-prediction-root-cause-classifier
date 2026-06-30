@@ -1,0 +1,2 @@
+[tool.vercel]
+entrypoint = "app.step12_fastapi:app"
