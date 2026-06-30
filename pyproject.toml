@@ -9,7 +9,6 @@ dependencies = [
     "scikit-learn",
     "joblib",
     "lightgbm",
-    "shap>=0.45.0",
     "fastapi",
     "uvicorn",
     "pydantic",
