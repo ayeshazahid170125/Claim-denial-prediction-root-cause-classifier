@@ -3,14 +3,19 @@ name = "claim-denial-prediction"
 version = "0.1.0"
 requires-python = ">=3.9"
 dependencies = [
-    "fastapi",
-    "uvicorn",
-    "joblib",
-    "scikit-learn",
-    "lightgbm",
     "pandas",
     "numpy",
+    "scipy",
+    "scikit-learn",
+    "joblib",
+    "openpyxl",
+    "xgboost",
+    "lightgbm",
     "shap",
+    "fastapi",
+    "uvicorn[standard]",
+    "pydantic",
+    "requests",
 ]
 
 [tool.vercel]
