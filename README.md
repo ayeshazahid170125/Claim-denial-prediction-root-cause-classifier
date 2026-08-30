@@ -1,34 +1,76 @@
-# Claim Denial Prediction & Root Cause Classifier
+<div align="center">
 
-An end-to-end healthcare Revenue Cycle Management project that predicts claim denial risk and classifies denial remark text into operational root-cause categories.
+# Claim Denial Prediction and Root Cause Classifier
 
-The project combines structured CMS Medicare provider-service data with a RARC-style NLP dataset to demonstrate how billing teams can identify high-risk claims before submission and route denial reasons to the right team.
+An end-to-end healthcare Revenue Cycle Management system that predicts claim denial risk and classifies denial remark text into operational root-cause categories.
 
-## Repository Order
+### Workflow Diagram
 
-```text
+![Claim Denial Prediction Workflow](assets/workflow-diagram.png)
+
+</div>
+
+---
+
+## Overview
+
+Healthcare billing teams lose time and revenue when claims are denied after submission. This project brings that check earlier — before a claim is submitted, it estimates the probability of denial and, if a denial remark is provided, classifies the likely operational root cause with a recommended first-pass fix.
+
+It combines structured CMS Medicare provider-service data with an X12 RARC-style NLP dataset, so billing teams can flag high-risk claims and route denial reasons to the right team before they become a loss.
+
+---
+
+## Key Features
+
+- **Denial risk prediction** — a boosted tree model trained on CMS Medicare provider-service data, tuned with Optuna, returning a 0–100% denial probability
+- **Risk tiering** — predictions are grouped into low, medium, and high risk using optimized probability thresholds
+- **Root-cause classification** — an NLP classifier (TF-IDF and DistilBERT compared) maps denial remark text to an X12 RARC-style taxonomy
+- **Explainability** — SHAP-based top feature drivers for every denial risk prediction
+- **First-pass remediation** — each root-cause classification comes with a recommended fix and confidence score
+- **FastAPI + Streamlit** — a live API backend and an interactive dashboard for entering claim details and reviewing results
+
+---
+
+## Application Screenshots
+
+<div align="center">
+
+### Claim Denial Predictor — Input
+*Provider info, utilization sliders, denial remark text, and risk flags feed the model.*
+
+<img src="assets/predictor-empty.png" alt="Claim Denial Predictor Input" width="720" />
+
+<br /><br />
+
+### Claim Denial Predictor — Result
+*Denial probability gauge, risk tier, and root-cause classification with a recommended fix.*
+
+<img src="assets/predictor-result.png" alt="Claim Denial Predictor Result" width="720" />
+
+</div>
+
+---
+
+## Project Structure
+
+```
 .
-|-- app/                 FastAPI service and Streamlit dashboard
-|-- src/                 Step-by-step data, ML, and NLP pipeline scripts
-|-- reports/             EDA, cleaning, feature, and modeling summary CSVs
-|-- outputs/             Lightweight NLP datasets, metrics, and charts
-|-- docs/                model cards, target definition, and full report
-|-- scripts/             small helper scripts and API smoke tests
-|-- run_pipeline.ps1     runs the full project pipeline
-|-- run_app.ps1          starts the API and dashboard
-|-- setup_project.ps1    creates environment and installs requirements
-|-- requirements.txt
-`-- README.md
+├── app/                 FastAPI service and Streamlit dashboard
+├── src/                 Step-by-step data, ML, and NLP pipeline scripts
+├── reports/             EDA, cleaning, feature, and modeling summary CSVs
+├── outputs/              Lightweight NLP datasets, metrics, and charts
+├── docs/                 Model cards, target definition, and full report
+├── scripts/              Small helper scripts and API smoke tests
+├── run_pipeline.ps1      Runs the full project pipeline
+├── run_app.ps1           Starts the API and dashboard
+├── setup_project.ps1     Creates environment and installs requirements
+├── requirements.txt
+└── README.md
 ```
 
-Large raw data files, trained model binaries, virtual environments, and generated heavy artifacts are intentionally ignored so the repository stays clean.
+Large raw data files, trained model binaries, virtual environments, and generated heavy artifacts are intentionally excluded so the repository stays clean.
 
-## Problem Statement
-
-Healthcare billing teams lose time and revenue when claims are denied after submission. This project demonstrates a pre-submission analytics workflow that answers two questions:
-
-1. How likely is this claim to be denied?
-2. If denied, what is the most likely operational root cause?
+---
 
 ## Data Sources
 
@@ -38,106 +80,56 @@ Healthcare billing teams lose time and revenue when claims are denied after subm
 
 No PHI or patient-level records are used.
 
-## Data Preprocessing
+---
 
-The structured data pipeline is organized in `src/`:
+## Pipeline
 
-1. `step01_eda.py` loads and profiles the raw CMS data.
-2. `step02_null_detection.py` audits null patterns and string-based missing values.
-3. `step03_duplicate_outlier.py` checks duplicates, outliers, and business-rule anomalies.
-4. `step04_cleaning.py` creates the cleaned Week 1 dataset.
-5. `step05_credentials.py` standardizes provider credentials.
-6. `step06_encoding.py` builds modeling-ready flags, logs, and encoded features.
-7. `step07_premodel_eda.py` defines the denial proxy target and pre-model summaries.
+**Data preprocessing** (`src/step01` – `step07`): loads and profiles the raw CMS data, audits nulls and duplicates, cleans and encodes it, and defines the denial proxy target.
 
-Summary outputs are saved under `reports/`.
+**Denial risk modeling** (`src/step08_model.py`): train/validation/test split, class imbalance handling, baseline vs. boosted tree comparison, Optuna tuning, threshold review, SHAP-style feature importance, and a bias/overfit audit.
 
-## Modeling
+**Root-cause NLP pipeline** (`src/step09` – `step11`): builds the RARC-style taxonomy and synthetic training text, then trains and compares TF-IDF and DistilBERT classifiers.
 
-The denial risk model is trained in `src/step08_model.py`.
-
-The modeling workflow includes:
-
-- train/validation/test split
-- class imbalance handling
-- baseline and boosted tree model comparison
-- Optuna tuning
-- threshold review
-- feature importance and SHAP-style driver outputs
-- bias and overfit audit reports
-
-The selected model artifacts are stored locally under `model_outputs/`, which is ignored by Git because the files are large and generated.
-
-## NLP Root-Cause Classifier
-
-The NLP pipeline is organized as:
-
-1. `step09_rarc_taxonomy.py` creates the root-cause taxonomy.
-2. `step10_synthetic_rarc_data.py` builds the RARC-style text dataset.
-3. `step11_nlp_classifier.py` trains and compares TF-IDF and DistilBERT classifiers.
-
-Tracked lightweight NLP outputs are under `outputs/nlp/`.
-
-## Results
-
-Denial risk model:
-
-- predicts a pre-submission denial-risk probability
-- groups predictions into low, medium, and high risk tiers
-- returns top drivers for review
-
-Root-cause classifier:
-
-- classifies denial remarks into operational categories
-- returns confidence scores
-- provides first-pass recommended fixes
-
-See `docs/MODEL_CARD.md` and `docs/COMPLETE_PROJECT_REPORT.md` for the full limitations and methodology.
+---
 
 ## Run Locally
 
-Set up the environment:
-
 ```powershell
+# Set up the environment
 .\setup_project.ps1
-```
 
-Run the full pipeline:
-
-```powershell
+# Run the full pipeline
 .\run_pipeline.ps1
-```
 
-Start the demo app:
-
-```powershell
+# Start the demo app
 .\run_app.ps1
 ```
 
 The app starts:
-
 - FastAPI: `http://localhost:8000`
 - Swagger docs: `http://localhost:8000/docs`
 - Streamlit dashboard: launched by Streamlit
 
-## API Smoke Test
-
-After starting the API:
+**API smoke test** (after starting the API):
 
 ```powershell
 python scripts\sample_api_request.py
 ```
 
-Main endpoints:
+**Main endpoints:**
 
-- `GET /health`
-- `POST /predict/denial-risk`
-- `POST /predict/root-cause`
-- `POST /predict/full`
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/health` | Health check |
+| POST | `/predict/denial-risk` | Denial risk prediction |
+| POST | `/predict/root-cause` | Root-cause classification |
+| POST | `/predict/full` | End-to-end prediction (risk + root cause) |
+
+---
 
 ## Important Notes
 
 - This is a portfolio demonstration, not a production billing system.
-- The denial label is a documented proxy because CMS public PUF data does not include real payer denial outcomes.
+- The denial label is a documented proxy, since CMS public PUF data does not include real payer denial outcomes.
 - The NLP training data combines official RARC descriptions with synthetic RARC-style examples.
 - This project should not be used to process PHI or make real coverage/payment decisions.
