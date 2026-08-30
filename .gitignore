@@ -25,7 +25,7 @@ Medicare_Cleaned_*.csv
 *.parquet
 
 # Generated model and NLP artifacts
-model_outputs/
+model_outputs/*
 outputs/
 reports/
 docs/
@@ -51,3 +51,10 @@ outlier_detection_charts.png
 Thumbs.db
 .vscode/
 .idea/
+
+# Exceptions: essential model artifacts needed to run the app
+!model_outputs/best_denial_risk_model.pkl
+!model_outputs/model_feature_names.pkl
+!model_outputs/model_threshold.pkl
+!model_outputs/high_cardinality_encoders.pkl
+!model_outputs/feature_columns.json

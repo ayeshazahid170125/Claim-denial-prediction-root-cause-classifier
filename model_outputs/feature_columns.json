@@ -1,0 +1,23 @@
+[
+  "Rndrng_Prvdr_RUCA",
+  "flag_services_lt_benes",
+  "flag_invalid_state",
+  "flag_non_us_country",
+  "RUCA_Unknown_Flag",
+  "Tot_Benes_log",
+  "Tot_Srvcs_log",
+  "Rndrng_Prvdr_Ent_Cd_bin",
+  "Rndrng_Prvdr_Mdcr_Prtcptg_Ind_bin",
+  "HCPCS_Drug_Ind_bin",
+  "Place_Of_Srvc_bin",
+  "svc_per_patient",
+  "charge_per_service_proxy",
+  "high_volume_flag",
+  "is_urban",
+  "HCPCS_Cd_freq_train",
+  "HCPCS_Cd_target_smooth_train",
+  "Rndrng_Prvdr_Type_freq_train",
+  "Rndrng_Prvdr_Type_target_smooth_train",
+  "Rndrng_Prvdr_State_Abrvtn_freq_train",
+  "Rndrng_Prvdr_State_Abrvtn_target_smooth_train"
+]
