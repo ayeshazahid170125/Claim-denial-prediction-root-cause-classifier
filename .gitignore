@@ -29,7 +29,6 @@ model_outputs/
 outputs/
 reports/
 docs/
-assets/
 nlp_outputs/models/
 nlp_outputs/*.png
 nlp_outputs/*.xlsx
